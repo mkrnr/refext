@@ -36,8 +36,35 @@
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>3.8.1</version>
+      <version>4.5</version>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>cc.mallet</groupId>
+      <artifactId>mallet</artifactId>
+      <version>2.0.8RC3</version>
+    </dependency>
+  	<dependency>
+  	  <groupId>pl.edu.icm.cermine</groupId>
+  	  <artifactId>cermine-impl</artifactId>
+  	  <version>1.11</version>
+  	</dependency>
+    <dependency>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-lang3</artifactId>
+        <version>3.5</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-collections4</artifactId>
+      <version>4.1</version>
+    </dependency>
   </dependencies>
+  <repositories>
+    <repository>
+      <id>icm</id>
+      <name>ICM repository</name>
+      <url>http://maven.icm.edu.pl/artifactory/repo</url>
+    </repository>
+  </repositories>
 </project>
