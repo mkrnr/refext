@@ -10,6 +10,7 @@ import pl.edu.icm.cermine.ExtractionUtils;
 import pl.edu.icm.cermine.configuration.ContentExtractorConfig;
 import pl.edu.icm.cermine.configuration.ContentExtractorConfigLoader;
 import pl.edu.icm.cermine.exception.AnalysisException;
+import pl.edu.icm.cermine.structure.ITextCharacterExtractor;
 import pl.edu.icm.cermine.structure.model.BxDocument;
 
 /**
@@ -36,7 +37,12 @@ public class CerminePdfExtractor {
      */
     public BxDocument extractWithResolvedReadingOrder(File pdfInputFile) throws AnalysisException, IOException {
 	InputStream inputStream = new FileInputStream(pdfInputFile);
-	BxDocument bxDocument = ExtractionUtils.extractCharacters(this.componentConfig, inputStream);
+
+	ITextCharacterExtractor iTextCharacterExtractor = new ITextCharacterExtractor();
+	// set page limits to override the default limits
+	iTextCharacterExtractor.setPagesLimits(-1, -1);
+	BxDocument bxDocument = iTextCharacterExtractor.extractCharacters(inputStream);
+
 	bxDocument = ExtractionUtils.segmentPages(this.componentConfig, bxDocument);
 	bxDocument = ExtractionUtils.resolveReadingOrder(this.componentConfig, bxDocument);
 	inputStream.close();
