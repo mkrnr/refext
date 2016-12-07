@@ -6,6 +6,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.io.FilenameUtils;
@@ -70,7 +71,13 @@ public class CermineLineExtractor {
 	    if (!currentOutputDirectory.exists()) {
 		currentOutputDirectory.mkdirs();
 	    }
-	    cermineLineExtractor.extract(inputFile, outputFile);
+	    List<String> lines = cermineLineExtractor.extract(inputFile);
+	    BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(outputFile));
+	    for (String line : lines) {
+		bufferedWriter.write(line);
+		bufferedWriter.newLine();
+	    }
+	    bufferedWriter.close();
 	}
 	Instant end = Instant.now();
 	System.out.println("Done. Execution time: " + Duration.between(start, end));
@@ -88,29 +95,21 @@ public class CermineLineExtractor {
      * @param pdfFile
      * @param outputFile
      */
-    public void extract(File pdfFile, File outputFile) {
+    public List<String> extract(File pdfFile) {
+	List<String> lines = new ArrayList<String>();
 	try {
 	    BxDocument bxDocument = this.cerminePdfExtractor.extractWithResolvedReadingOrder(pdfFile);
 
-	    BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(outputFile));
-
 	    for (BxPage bxPage : bxDocument.asPages()) {
-		// System.out.println("---------------");
 		for (BxZone bxZone : bxPage) {
-		    // System.out.println("---------");
 		    for (BxLine bxLine : bxZone) {
-			// System.out.println(fixedString);
 			String extractedLine = this.extractFromLine(bxLine);
-			bufferedWriter.write(extractedLine);
-			bufferedWriter.newLine();
+			lines.add(extractedLine);
 
 		    }
 		}
-		// adds an empty line at the end of a page
-		// bufferedWriter.newLine();
 
 	    }
-	    bufferedWriter.close();
 	} catch (IOException e) {
 	    // TODO Auto-generated catch block
 	    e.printStackTrace();
@@ -125,6 +124,7 @@ public class CermineLineExtractor {
 	    // InlineImageParseException/InvocationTargetException is not caught
 	    e.printStackTrace();
 	}
+	return lines;
     }
 
     protected String extractFromLine(BxLine bxLine) {

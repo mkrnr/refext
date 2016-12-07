@@ -1,6 +1,8 @@
 package de.exciteproject.refext.extract;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.time.Duration;
 import java.time.Instant;
@@ -63,7 +65,13 @@ public class CermineLineLayoutExtractor extends CermineLineExtractor {
 	    if (!currentOutputDirectory.exists()) {
 		currentOutputDirectory.mkdirs();
 	    }
-	    cermineLineLayoutExtractor.extract(inputFile, outputFile);
+	    List<String> lines = cermineLineLayoutExtractor.extract(inputFile);
+	    BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(outputFile));
+	    for (String line : lines) {
+		bufferedWriter.write(line);
+		bufferedWriter.newLine();
+	    }
+	    bufferedWriter.close();
 	}
 
 	Instant end = Instant.now();
@@ -81,7 +89,6 @@ public class CermineLineLayoutExtractor extends CermineLineExtractor {
     protected String extractFromLine(BxLine bxLine) {
 	String fixedLine = TextUtils.fixAccents(bxLine.toText());
 	fixedLine = CsvUtils.normalize(fixedLine);
-	System.out.println(bxLine.getX() + " : " + bxLine.getY());
 	fixedLine += "\t" + bxLine.getX() + "\t" + bxLine.getY() + "\t" + bxLine.getHeight() + "\t" + bxLine.getWidth()
 		+ "\t" + bxLine.getParent().getId();
 	return fixedLine;
