@@ -19,9 +19,9 @@ import cc.mallet.pipe.iterator.LineGroupIterator;
 import cc.mallet.types.Instance;
 import cc.mallet.types.InstanceList;
 import cc.mallet.types.Sequence;
+import cc.mallet.util.FileUtils;
 import de.exciteproject.refext.extract.CermineLineLayoutExtractor;
 import de.exciteproject.refext.extract.ReferenceStringFromAnnotatedLinesExtractor;
-import de.exciteproject.refext.util.Deserializer;
 import pl.edu.icm.cermine.bibref.BibReferenceParser;
 import pl.edu.icm.cermine.bibref.CRFBibReferenceParser;
 import pl.edu.icm.cermine.bibref.model.BibEntry;
@@ -72,9 +72,8 @@ public class ExtractionRunner {
     private InstanceList inputInstances;
     private Pipe pipe;
 
-    public ExtractionRunner(File crfModelFile) throws ClassNotFoundException, IOException {
-	// this.crf = (CRF) FileUtils.readObject(crfModelFile);
-	this.crf = (CRF) Deserializer.deserialize(crfModelFile);
+    public ExtractionRunner(File crfModelFile) throws IOException {
+	this.crf = (CRF) FileUtils.readObject(crfModelFile);
 	this.pipe = this.crf.getInputPipe();
     }
 

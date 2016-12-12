@@ -9,7 +9,7 @@ import py4j.GatewayServer;
 
 public class ExtractionRunnerEntryPoint {
 
-    public static void main(String[] args) throws ClassNotFoundException, IOException {
+    public static void main(String[] args) throws IOException {
 	GatewayServer gatewayServer = new GatewayServer(new ExtractionRunnerEntryPoint(new File(args[0])));
 	gatewayServer.start();
 
@@ -23,7 +23,7 @@ public class ExtractionRunnerEntryPoint {
 
     private ExtractionRunner extractionRunner;
 
-    public ExtractionRunnerEntryPoint(File crfModelFile) throws ClassNotFoundException, IOException {
+    public ExtractionRunnerEntryPoint(File crfModelFile) throws IOException {
 	this.extractionRunner = new ExtractionRunner(crfModelFile);
     }
 

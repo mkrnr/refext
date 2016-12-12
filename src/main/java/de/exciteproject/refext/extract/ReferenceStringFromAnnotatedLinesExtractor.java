@@ -37,7 +37,7 @@ public class ReferenceStringFromAnnotatedLinesExtractor {
 
     }
 
-    public static void main(String[] args) throws IOException, AnalysisException, ClassNotFoundException {
+    public static void main(String[] args) throws IOException, AnalysisException {
 	File inputFile = new File(args[0]);
 	// File outputFile = new File(args[1]);
 	File crfModelFile = new File(args[2]);
