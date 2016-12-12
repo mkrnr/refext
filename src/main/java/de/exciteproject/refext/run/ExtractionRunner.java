@@ -70,9 +70,11 @@ public class ExtractionRunner {
 
     private CRF crf;
     private InstanceList inputInstances;
+    private Pipe pipe;
 
     public ExtractionRunner(File crfModelFile) throws IOException {
 	this.crf = (CRF) FileUtils.readObject(crfModelFile);
+	this.pipe = this.crf.getInputPipe();
     }
 
     public List<String> run(File pdfFile) throws IOException, AnalysisException {
@@ -86,9 +88,9 @@ public class ExtractionRunner {
 	}
 	BufferedReader lineReader = new BufferedReader(new StringReader(lineStringBuilder.toString()));
 
-	Pipe pipe = this.crf.getInputPipe();
-	this.inputInstances = new InstanceList(pipe);
+	this.inputInstances = new InstanceList(this.pipe);
 	this.inputInstances.addThruPipe(new LineGroupIterator(lineReader, Pattern.compile("^\\s*$"), true));
+	lineReader.close();
 
 	CRFTrainerByLabelLikelihood trainer = new CRFTrainerByLabelLikelihood(this.crf);
 	trainer.setUseSparseWeights(false);
