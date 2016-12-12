@@ -112,6 +112,7 @@ public class LayoutPipe extends Pipe implements Serializable {
 	in.readInt();
 
 	this.indentFeatureLabel = (String) in.readObject();
+	this.gapAboveLabel = (String) in.readObject();
 	this.differentZoneLabel = (String) in.readObject();
 	this.csvSeparator = (String) in.readObject();
 	// this.yPosFeatureLabel = (String) in.readObject();
@@ -120,6 +121,7 @@ public class LayoutPipe extends Pipe implements Serializable {
     private void writeObject(ObjectOutputStream out) throws IOException {
 	out.writeInt(CURRENT_SERIAL_VERSION);
 	out.writeObject(this.indentFeatureLabel);
+	out.writeObject(this.gapAboveLabel);
 	out.writeObject(this.differentZoneLabel);
 	out.writeObject(this.csvSeparator);
 	// out.writeObject(this.yPosFeatureLabel);

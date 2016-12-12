@@ -21,6 +21,10 @@ import cc.mallet.types.InstanceList;
 import cc.mallet.types.Sequence;
 import cc.mallet.util.FileUtils;
 import de.exciteproject.refext.extract.CermineLineLayoutExtractor;
+import de.exciteproject.refext.extract.ReferenceStringFromAnnotatedLinesExtractor;
+import pl.edu.icm.cermine.bibref.BibReferenceParser;
+import pl.edu.icm.cermine.bibref.CRFBibReferenceParser;
+import pl.edu.icm.cermine.bibref.model.BibEntry;
 import pl.edu.icm.cermine.exception.AnalysisException;
 
 /**
@@ -50,10 +54,14 @@ public class ExtractionRunner {
 
 	    String outputFileName = FilenameUtils.removeExtension(inputFile.getName()) + ".txt";
 	    File outputFile = new File(currentOutputDirectory.getAbsolutePath() + File.separator + outputFileName);
-	    List<String> lines = extractionRunner.run(inputFile);
+	    List<String> annotatedLines = extractionRunner.run(inputFile);
+	    List<String> referenceStrings = ReferenceStringFromAnnotatedLinesExtractor.extract(annotatedLines);
+	    BibReferenceParser<BibEntry> bibReferenceParser = CRFBibReferenceParser.getInstance();
+
 	    BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(outputFile));
-	    for (String line : lines) {
-		bufferedWriter.write(line);
+	    for (String referenceString : referenceStrings) {
+		BibEntry bibEntry = bibReferenceParser.parseBibReference(referenceString);
+		bufferedWriter.write(bibEntry.toBibTeX());
 		bufferedWriter.newLine();
 	    }
 	    bufferedWriter.close();
