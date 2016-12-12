@@ -57,7 +57,6 @@ public class NamePipe extends Pipe implements Serializable {
 	    lastNameFileReader.close();
 
 	} catch (FileNotFoundException e) {
-	    System.err.println("lastNameFile not found");
 	    e.printStackTrace();
 	} catch (IOException e) {
 	    e.printStackTrace();
@@ -71,10 +70,10 @@ public class NamePipe extends Pipe implements Serializable {
 
 	for (Token token : sequence) {
 	    String[] tokenSplit = token.getText().trim().split("\\s");
-	    for (String tokenPart : tokenSplit) {
-		String normalizedTokenPart = tokenPart.replaceAll("[^\\p{L}]", "");
+	    for (int i = 0; i < tokenSplit.length; i++) {
+		String normalizedTokenPart = tokenSplit[i].replaceAll("[^\\p{L}]", "");
 		if ((normalizedTokenPart.length() > 0) && this.nameCountMap.containsKey((normalizedTokenPart))) {
-		    token.setFeatureValue(this.featureName, this.nameCountMap.get(normalizedTokenPart));
+		    token.setFeatureValue(this.featureName + "@" + i, 1.0);
 		}
 	    }
 	}

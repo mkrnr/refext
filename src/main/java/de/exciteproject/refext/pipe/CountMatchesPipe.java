@@ -5,8 +5,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
-import org.apache.commons.lang.StringUtils;
-
 import cc.mallet.pipe.Pipe;
 import cc.mallet.types.Instance;
 import cc.mallet.types.Token;
@@ -22,11 +20,11 @@ public class CountMatchesPipe extends Pipe implements Serializable {
     private static final int CURRENT_SERIAL_VERSION = 0;
 
     private String feature;
-    private String subString;
+    private String wordRegex;
 
-    public CountMatchesPipe(String featureName, String subString) {
+    public CountMatchesPipe(String featureName, String wordRegex) {
 	this.feature = featureName;
-	this.subString = subString;
+	this.wordRegex = wordRegex;
     }
 
     @Override
@@ -35,9 +33,17 @@ public class CountMatchesPipe extends Pipe implements Serializable {
 	for (int i = 0; i < tokenSequence.size(); i++) {
 	    Token token = tokenSequence.get(i);
 	    String tokenText = token.getText();
-	    int count = StringUtils.countMatches(tokenText, this.subString);
+	    String[] tokenTextSplit = tokenText.split("\\s");
+	    int count = 0;
+	    for (String string : tokenTextSplit) {
+		if (string.matches(this.wordRegex)) {
+		    count++;
+		}
+
+	    }
+	    // int count = StringUtils.countMatches(tokenText, this.subString);
 	    if (count > 0) {
-		token.setFeatureValue(this.feature, count);
+		token.setFeatureValue(this.feature + "=" + count, 1.0);
 	    }
 	}
 	return carrier;
@@ -48,13 +54,13 @@ public class CountMatchesPipe extends Pipe implements Serializable {
 	in.readInt();
 
 	this.feature = (String) in.readObject();
-	this.subString = (String) in.readObject();
+	this.wordRegex = (String) in.readObject();
     }
 
     private void writeObject(ObjectOutputStream out) throws IOException {
 	out.writeInt(CURRENT_SERIAL_VERSION);
 	out.writeObject(this.feature);
-	out.writeObject(this.subString);
+	out.writeObject(this.wordRegex);
     }
 
 }

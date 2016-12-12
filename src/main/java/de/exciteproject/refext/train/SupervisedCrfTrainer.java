@@ -20,12 +20,13 @@ import cc.mallet.pipe.Target2LabelSequence;
 import cc.mallet.pipe.TokenSequence2FeatureVectorSequence;
 import cc.mallet.pipe.TokenSequenceMatchDataAndTarget;
 import cc.mallet.pipe.iterator.LineGroupIterator;
-import cc.mallet.pipe.tsf.CountMatches;
 import cc.mallet.pipe.tsf.OffsetConjunctions;
-import cc.mallet.pipe.tsf.RegexMatches;
-import cc.mallet.pipe.tsf.TokenText;
+import cc.mallet.pipe.tsf.TokenTextCharPrefix;
+import cc.mallet.pipe.tsf.TokenTextCharSuffix;
 import cc.mallet.types.InstanceList;
+import de.exciteproject.refext.pipe.CountMatchesPipe;
 import de.exciteproject.refext.pipe.LayoutPipe;
+import de.exciteproject.refext.pipe.RegexPipe;
 import de.exciteproject.refext.pipe.XmlRefTagToTargetPipe;
 
 /**
@@ -35,56 +36,71 @@ import de.exciteproject.refext.pipe.XmlRefTagToTargetPipe;
 public class SupervisedCrfTrainer {
 
     public static void main(String[] args) throws FileNotFoundException, IOException {
-	// TODO Auto-generated method stub
-
 	File trainingFile = new File(args[0]);
 	File testingFile = new File(args[1]);
 	ArrayList<Pipe> pipes = new ArrayList<Pipe>();
 	pipes.add(new LineGroupString2TokenSequence());
 	pipes.add(new XmlRefTagToTargetPipe("ref", "oth", "REF", "REFO", "O"));
 	pipes.add(new TokenSequenceMatchDataAndTarget(Pattern.compile("([A-Z]*\\-*[A-Z]+) (.*)"), 2, 1));
-	pipes.add(new LayoutPipe("INDENT", "DIFFZONE", "\\t"));
-	// pipes.add(new NamePipeOld("FIRSTNAMES", "LASTNAMES", new
-	// File(args[2])));
+	pipes.add(new LayoutPipe("INDENT", "PREVGAP", "DIFFZONE", "\\t"));
 
+	// pipes.add(new NamePipe("FIRSTNAME", new File(args[2])));
+	// pipes.add(new NamePipe("LASTNAME", new File(args[3])));
 	// pipes.add(new TokenSequenceParseFeatureString(false));
-	pipes.add(new TokenText());
+	// pipes.add(new TokenText());
 	// pipes.add(new TokenTextCharSuffix("C1=", 1));
 	// pipes.add(new TokenTextCharSuffix("C2=", 2));
 	// pipes.add(new TokenTextCharSuffix("C3=", 3));
-	pipes.add(new RegexMatches("CAPITALIZED", Pattern.compile("\\p{Lu}.*")));
-	pipes.add(new RegexMatches("STARTSNUMBER", Pattern.compile("[0-9].*")));
-	pipes.add(new RegexMatches("CONTAINSYEAR", Pattern.compile(".*\\D[0-9][0-9][0-9][0-9]\\D.*")));
-	pipes.add(new RegexMatches("CONTAINSPAGERANGE", Pattern.compile(".*\\d(-|^|\")\\d.*")));
-	pipes.add(new RegexMatches("CONTAINSAMPHERSAND", Pattern.compile(".*&.*")));
+	pipes.add(new RegexPipe("STARTSCAPITALIZED", Pattern.compile("\\p{javaUpperCase}.*")));
+	pipes.add(new RegexPipe("STARTSNUMBER", Pattern.compile("[0-9].*")));
+	pipes.add(new RegexPipe("CONTAINSYEAR", Pattern.compile(".*\\D[0-9][0-9][0-9][0-9]\\D.*")));
+	pipes.add(new RegexPipe("CONTAINSPAGERANGE", Pattern.compile(".*\\d(-|^|\")\\d.*")));
+	pipes.add(new RegexPipe("CONTAINSAMPHERSAND", Pattern.compile(".*&.*")));
 	// pipes.add(new RegexMatches("HYPHENATED",
 	// Pattern.compile(".*\\-.*")));
 	// pipes.add(new RegexMatches("DOLLARSIGN",
 	// Pattern.compile(".*\\$.*")));
-	pipes.add(new RegexMatches("ENDSPERIOD", Pattern.compile(".*\\.")));
-	pipes.add(new RegexMatches("ISNUMBER", Pattern.compile("/d+")));
 
-	pipes.add(new CountMatches("PERIODS", Pattern.compile("\\.")));
-	pipes.add(new CountMatches("COMMAS", Pattern.compile(",")));
-	pipes.add(new CountMatches("CAPITALIZEDS", Pattern.compile("\\s\\p{Lu}\\S")));
+	pipes.add(new RegexPipe("COLON", Pattern.compile(".*:.*")));
+	pipes.add(new RegexPipe("SLASH", Pattern.compile(".*/.*")));
+	pipes.add(new RegexPipe("BRACES", Pattern.compile(".*\\(.*\\).*")));
 
-	pipes.add(new RegexMatches("CONTAINSQUOTE", Pattern.compile(".*[„“””‘’\"'].*")));
+	pipes.add(new RegexPipe("ENDSPERIOD", Pattern.compile(".*\\.")));
+	pipes.add(new RegexPipe("ENDSCOMMA", Pattern.compile(".*,")));
+	pipes.add(new RegexPipe("ISNUMBER", Pattern.compile("/d+")));
+	pipes.add(new CountMatchesPipe("PERIODS", ".*\\..*"));
+	pipes.add(new CountMatchesPipe("COMMAS", ".*,.*"));
+	pipes.add(new CountMatchesPipe("CAPITALIZEDS", "\\p{Lu}.*"));
+	pipes.add(new CountMatchesPipe("LOWERCASEDS", "\\p{javaLowerCase}.*"));
+	pipes.add(new CountMatchesPipe("WORDS", ".+"));
+	pipes.add(new RegexPipe("CONTAINSQUOTE", Pattern.compile(".*[„“””‘’\"'].*")));
+	// matches tokens that match a year between 1699 and the current year
+	// with surrounding non-digit chars
+	// int year = Calendar.getInstance().get(Calendar.YEAR);
+	// int decadeNumber = (year / 10) % 10;
+	// int yearNumber = year % 10;
+	//
+	// pipes.add(new RegexMatches("YEAR",
+	// Pattern.compile("\\D*(1[6-9][0-9][0-9]|20[0-" + decadeNumber + "][0-"
+	// + yearNumber + "])\\D*")));
 
 	// pipes.add(new RegexMatches("CONTAINSURL",
 	// Pattern.compile(".*(https?:\\/\\/)?([\\da-z\\.-]+)\\.([a-z\\.]{2,6})([\\/\\w
 	// \\.-]*)*\\/?.*")));
 
 	// makes things worse:
-	// pipes.add(new TokenTextCharSuffix("SUFFIX=", 1));
-	// pipes.add(new TokenTextCharPrefix("PREFIX=", 1));
+	pipes.add(new TokenTextCharSuffix("SUFFIX=", 1));
+	pipes.add(new TokenTextCharPrefix("PREFIX=", 1));
 
-	int[][] conjunctions = new int[2][];
-	conjunctions[0] = new int[] { -1 };
-	conjunctions[1] = new int[] { 1 };
+	int[][] conjunctions = new int[3][];
+	conjunctions[0] = new int[] { -2 };
+	conjunctions[1] = new int[] { -1 };
+	conjunctions[2] = new int[] { 1 };
 	pipes.add(new OffsetConjunctions(conjunctions));
 
 	pipes.add(new TokenSequence2FeatureVectorSequence(false, false));
 	pipes.add(new Target2LabelSequence());
+
 	// pipes.add(new PrintInputAndTarget());
 
 	Pipe pipe = new SerialPipes(pipes);
@@ -95,6 +111,8 @@ public class SupervisedCrfTrainer {
 	trainingInstances.addThruPipe(
 		new LineGroupIterator(new BufferedReader(new InputStreamReader(new FileInputStream(trainingFile))),
 			Pattern.compile("^\\s*$"), true));
+
+	// System.exit(1);
 	testingInstances.addThruPipe(
 		new LineGroupIterator(new BufferedReader(new InputStreamReader(new FileInputStream(testingFile))),
 			Pattern.compile("^\\s*$"), true));
@@ -122,14 +140,6 @@ public class SupervisedCrfTrainer {
 	trainer.addEvaluator(new TokenAccuracyEvaluator(testingInstances, "testing"));
 	trainer.train(trainingInstances);
 	crf.write(new File("/home/mkoerner/crf.ser"));
-	// CRFWriter crfWriter = new CRFWriter("/home/mkoerner/crf.ser") {
-	// @Override
-	// public boolean precondition(TransducerTrainer tt) {
-	// // save the trained model after training finishes
-	// return (tt.getIteration() % Integer.MAX_VALUE) == 0;
-	// }
-	// };
-	// trainer.addEvaluator(crfWriter);
 
     }
 

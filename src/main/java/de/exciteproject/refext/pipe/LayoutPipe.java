@@ -21,11 +21,13 @@ public class LayoutPipe extends Pipe implements Serializable {
     private static final int CURRENT_SERIAL_VERSION = 0;
 
     private String indentFeatureLabel;
-    private String csvSeparator;
+    private String gapAboveLabel;
     private String differentZoneLabel;
+    private String csvSeparator;
 
-    public LayoutPipe(String indentFeatureLabel, String differentZoneLabel, String csvSeparator) {
+    public LayoutPipe(String indentFeatureLabel, String gapAboveLabel, String differentZoneLabel, String csvSeparator) {
 	this.indentFeatureLabel = indentFeatureLabel;
+	this.gapAboveLabel = gapAboveLabel;
 	this.differentZoneLabel = differentZoneLabel;
 	this.csvSeparator = csvSeparator;
 
@@ -39,14 +41,12 @@ public class LayoutPipe extends Pipe implements Serializable {
 	double prevHeight = Double.MAX_VALUE;
 	double prevWidth = Double.MAX_VALUE;
 	double prevZoneId = 0.0;
+	double prevDistance = Double.MAX_VALUE;
 
 	boolean prevWasIndent = false;
 	for (int i = 0; i < tokenSequence.size(); i++) {
 	    Token token = tokenSequence.get(i);
 	    String tokenText = token.getText();
-
-	    // fixedLine += "\t" + bxLine.getX() + "\t" + bxLine.getY() + "\t" +
-	    // bxLine.getHeight() + "\t" + bxLine.getWidth()
 
 	    String[] tokenSplit = tokenText.split(this.csvSeparator);
 
@@ -55,6 +55,9 @@ public class LayoutPipe extends Pipe implements Serializable {
 		throw new IllegalStateException("token split length is not 5 but " + tokenSplit.length);
 	    }
 
+	    // format (copied from CermineLineLayoutExtractor)
+	    // fixedLine += "\t" + bxLine.getX() + "\t" + bxLine.getY() + "\t" +
+	    // bxLine.getHeight() + "\t" + bxLine.getWidth()
 	    double thisXPos = Double.parseDouble(tokenSplit[1]);
 	    double thisYPos = Double.parseDouble(tokenSplit[2]);
 	    double thisHeight = Double.parseDouble(tokenSplit[3]);
@@ -64,6 +67,8 @@ public class LayoutPipe extends Pipe implements Serializable {
 	    if (thisZoneId != prevZoneId) {
 		// token.setFeatureValue(this.differentZoneLabel, 1.0);
 		prevWasIndent = false;
+
+		// token.setFeatureValue("NEWZONE", 1.0);
 	    } else {
 		if (prevWasIndent) {
 		    if (Math.abs(thisXPos - prevXPos) < 0.001) {
@@ -80,7 +85,16 @@ public class LayoutPipe extends Pipe implements Serializable {
 			prevWasIndent = false;
 		    }
 		}
+
 	    }
+
+	    // calculate distance to prev line
+	    double thisDistance = thisYPos - (prevYPos + prevHeight);
+	    if ((thisDistance - prevDistance) > 5) {
+		token.setFeatureValue(this.gapAboveLabel, 1.0);
+	    }
+	    prevDistance = thisDistance;
+
 	    token.setText(tokenSplit[0]);
 
 	    prevXPos = thisXPos;

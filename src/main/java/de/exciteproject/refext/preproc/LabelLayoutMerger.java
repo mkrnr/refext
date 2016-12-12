@@ -3,6 +3,7 @@ package de.exciteproject.refext.preproc;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -35,7 +36,11 @@ public class LabelLayoutMerger {
 	    File outputFile = new File(outputDirectory + labelInputFileSubPath);
 	    outputFile.getParentFile().mkdirs();
 	    System.out.println("processing: " + labeledInputFile);
-	    labelLayoutMerger.merge(labeledInputFile, layoutInputFile, outputFile);
+	    try {
+		labelLayoutMerger.merge(labeledInputFile, layoutInputFile, outputFile);
+	    } catch (FileNotFoundException e) {
+		e.printStackTrace();
+	    }
 
 	}
 
