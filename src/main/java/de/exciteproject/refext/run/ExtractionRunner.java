@@ -71,16 +71,17 @@ public class ExtractionRunner {
     private CRF crf;
     private InstanceList inputInstances;
     private Pipe pipe;
+    private CermineLineLayoutExtractor cermineLineLayoutExtractor;
 
-    public ExtractionRunner(File crfModelFile) throws IOException {
+    public ExtractionRunner(File crfModelFile) throws IOException, AnalysisException {
 	this.crf = (CRF) FileUtils.readObject(crfModelFile);
 	this.pipe = this.crf.getInputPipe();
+	this.cermineLineLayoutExtractor = new CermineLineLayoutExtractor();
     }
 
     public List<String> run(File pdfFile) throws IOException, AnalysisException {
 
-	CermineLineLayoutExtractor cermineLineLayoutExtractor = new CermineLineLayoutExtractor();
-	List<String> linesWithLayout = cermineLineLayoutExtractor.extract(pdfFile);
+	List<String> linesWithLayout = this.cermineLineLayoutExtractor.extract(pdfFile);
 
 	StringBuilder lineStringBuilder = new StringBuilder();
 	for (String line : linesWithLayout) {
