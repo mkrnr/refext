@@ -55,6 +55,10 @@ public class ExtractionRunner {
 	    String outputFileName = FilenameUtils.removeExtension(inputFile.getName()) + ".txt";
 	    File outputFile = new File(currentOutputDirectory.getAbsolutePath() + File.separator + outputFileName);
 
+	    // skip files that are larger than 10MB
+	    if (inputFile.length() > 10000000) {
+		continue;
+	    }
 	    // skip if outputFile already exists
 	    if (outputFile.exists()) {
 		continue;
