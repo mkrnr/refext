@@ -54,6 +54,11 @@ public class ExtractionRunner {
 
 	    String outputFileName = FilenameUtils.removeExtension(inputFile.getName()) + ".txt";
 	    File outputFile = new File(currentOutputDirectory.getAbsolutePath() + File.separator + outputFileName);
+
+	    // skip if outputFile already exists
+	    if (outputFile.exists()) {
+		continue;
+	    }
 	    List<String> annotatedLines = extractionRunner.run(inputFile);
 	    List<String> referenceStrings = ReferenceStringFromAnnotatedLinesExtractor.extract(annotatedLines);
 	    BibReferenceParser<BibEntry> bibReferenceParser = CRFBibReferenceParser.getInstance();
