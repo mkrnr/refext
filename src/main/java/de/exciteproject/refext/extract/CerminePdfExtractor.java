@@ -22,8 +22,8 @@ public class CerminePdfExtractor {
     private ComponentConfiguration componentConfig;
 
     public CerminePdfExtractor() throws AnalysisException {
-	ContentExtractorConfig contentExtractorConfig = new ContentExtractorConfigLoader().loadConfiguration();
-	this.componentConfig = new ComponentConfiguration(contentExtractorConfig);
+        ContentExtractorConfig contentExtractorConfig = new ContentExtractorConfigLoader().loadConfiguration();
+        this.componentConfig = new ComponentConfiguration(contentExtractorConfig);
     }
 
     /**
@@ -36,17 +36,17 @@ public class CerminePdfExtractor {
      * @throws IOException
      */
     public BxDocument extractWithResolvedReadingOrder(File pdfInputFile) throws AnalysisException, IOException {
-	InputStream inputStream = new FileInputStream(pdfInputFile);
+        InputStream inputStream = new FileInputStream(pdfInputFile);
 
-	ITextCharacterExtractor iTextCharacterExtractor = new ITextCharacterExtractor();
-	// set page limits to override the default limits
-	iTextCharacterExtractor.setPagesLimits(-1, -1);
-	BxDocument bxDocument = iTextCharacterExtractor.extractCharacters(inputStream);
+        ITextCharacterExtractor iTextCharacterExtractor = new ITextCharacterExtractor();
+        // set page limits to override the default limits
+        iTextCharacterExtractor.setPagesLimits(-1, -1);
+        BxDocument bxDocument = iTextCharacterExtractor.extractCharacters(inputStream);
 
-	bxDocument = ExtractionUtils.segmentPages(this.componentConfig, bxDocument);
-	bxDocument = ExtractionUtils.resolveReadingOrder(this.componentConfig, bxDocument);
-	inputStream.close();
-	return bxDocument;
+        bxDocument = ExtractionUtils.segmentPages(this.componentConfig, bxDocument);
+        bxDocument = ExtractionUtils.resolveReadingOrder(this.componentConfig, bxDocument);
+        inputStream.close();
+        return bxDocument;
     }
 
 }

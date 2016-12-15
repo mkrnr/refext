@@ -37,56 +37,56 @@ public class NamePipe extends Pipe implements Serializable {
      *            a file containing per line: name tab count
      */
     public NamePipe(String featureName, File nameFile) {
-	this.featureName = featureName;
+        this.featureName = featureName;
 
-	this.nameCountMap = new HashMap<String, Double>();
-	try {
-	    BufferedReader lastNameFileReader = new BufferedReader(new FileReader(nameFile));
-	    String line;
-	    while ((line = lastNameFileReader.readLine()) != null) {
-		// removes the name counts
-		String[] lineSplit = line.split("\t");
-		if (lineSplit.length != 2) {
-		    lastNameFileReader.close();
-		    throw new IllegalStateException("line is in wrong format: " + line);
-		}
-		Integer currentCount = Integer.valueOf(lineSplit[1]);
-		double featureValue = Math.log1p(currentCount);
-		this.nameCountMap.put(lineSplit[0].trim(), featureValue);
-	    }
-	    lastNameFileReader.close();
+        this.nameCountMap = new HashMap<String, Double>();
+        try {
+            BufferedReader lastNameFileReader = new BufferedReader(new FileReader(nameFile));
+            String line;
+            while ((line = lastNameFileReader.readLine()) != null) {
+                // removes the name counts
+                String[] lineSplit = line.split("\t");
+                if (lineSplit.length != 2) {
+                    lastNameFileReader.close();
+                    throw new IllegalStateException("line is in wrong format: " + line);
+                }
+                Integer currentCount = Integer.valueOf(lineSplit[1]);
+                double featureValue = Math.log1p(currentCount);
+                this.nameCountMap.put(lineSplit[0].trim(), featureValue);
+            }
+            lastNameFileReader.close();
 
-	} catch (FileNotFoundException e) {
-	    e.printStackTrace();
-	} catch (IOException e) {
-	    e.printStackTrace();
-	}
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public Instance pipe(Instance instance) {
 
-	TokenSequence sequence = (TokenSequence) instance.getData();
+        TokenSequence sequence = (TokenSequence) instance.getData();
 
-	for (Token token : sequence) {
-	    String[] tokenSplit = token.getText().trim().split("\\s");
-	    for (int i = 0; i < tokenSplit.length; i++) {
-		String normalizedTokenPart = tokenSplit[i].replaceAll("[^\\p{L}]", "");
-		if ((normalizedTokenPart.length() > 0) && this.nameCountMap.containsKey((normalizedTokenPart))) {
-		    token.setFeatureValue(this.featureName + "@" + i, 1.0);
-		}
-	    }
-	}
-	return instance;
+        for (Token token : sequence) {
+            String[] tokenSplit = token.getText().trim().split("\\s");
+            for (int i = 0; i < tokenSplit.length; i++) {
+                String normalizedTokenPart = tokenSplit[i].replaceAll("[^\\p{L}]", "");
+                if ((normalizedTokenPart.length() > 0) && this.nameCountMap.containsKey((normalizedTokenPart))) {
+                    token.setFeatureValue(this.featureName + "@" + i, 1.0);
+                }
+            }
+        }
+        return instance;
     }
 
     private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
-	this.featureName = (String) in.readObject();
+        this.featureName = (String) in.readObject();
     }
 
     private void writeObject(ObjectOutputStream out) throws IOException {
-	out.writeInt(CURRENT_SERIAL_VERSION);
-	out.writeObject(this.featureName);
+        out.writeInt(CURRENT_SERIAL_VERSION);
+        out.writeObject(this.featureName);
     }
 
 }

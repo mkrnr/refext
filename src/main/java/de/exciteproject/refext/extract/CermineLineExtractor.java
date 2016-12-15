@@ -40,53 +40,53 @@ public class CermineLineExtractor {
      * @throws AnalysisException
      */
     public static void main(String[] args) throws IOException, AnalysisException {
-	File inputDir = new File(args[0]);
-	File outputDir = new File(args[1]);
+        File inputDir = new File(args[0]);
+        File outputDir = new File(args[1]);
 
-	if (!outputDir.exists()) {
-	    outputDir.mkdirs();
-	}
+        if (!outputDir.exists()) {
+            outputDir.mkdirs();
+        }
 
-	List<File> inputFiles = FileUtils.listFilesRecursively(inputDir);
-	CermineLineExtractor cermineLineExtractor = new CermineLineExtractor();
+        List<File> inputFiles = FileUtils.listFilesRecursively(inputDir);
+        CermineLineExtractor cermineLineExtractor = new CermineLineExtractor();
 
-	Instant start = Instant.now();
-	for (File inputFile : inputFiles) {
-	    System.out.println("processing: " + inputFile);
+        Instant start = Instant.now();
+        for (File inputFile : inputFiles) {
+            System.out.println("processing: " + inputFile);
 
-	    File currentOutputDirectory;
+            File currentOutputDirectory;
 
-	    String subDirectories = inputFile.getParentFile().getAbsolutePath().replaceFirst(inputDir.getAbsolutePath(),
-		    "");
-	    currentOutputDirectory = new File(outputDir.getAbsolutePath() + File.separator + subDirectories);
+            String subDirectories = inputFile.getParentFile().getAbsolutePath().replaceFirst(inputDir.getAbsolutePath(),
+                    "");
+            currentOutputDirectory = new File(outputDir.getAbsolutePath() + File.separator + subDirectories);
 
-	    String outputFileName = FilenameUtils.removeExtension(inputFile.getName()) + ".txt";
-	    File outputFile = new File(currentOutputDirectory.getAbsolutePath() + File.separator + outputFileName);
+            String outputFileName = FilenameUtils.removeExtension(inputFile.getName()) + ".txt";
+            File outputFile = new File(currentOutputDirectory.getAbsolutePath() + File.separator + outputFileName);
 
-	    // skip computation if outputFile already exists
-	    if (outputFile.exists()) {
-		continue;
-	    }
+            // skip computation if outputFile already exists
+            if (outputFile.exists()) {
+                continue;
+            }
 
-	    if (!currentOutputDirectory.exists()) {
-		currentOutputDirectory.mkdirs();
-	    }
-	    List<String> lines = cermineLineExtractor.extract(inputFile);
-	    BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(outputFile));
-	    for (String line : lines) {
-		bufferedWriter.write(line);
-		bufferedWriter.newLine();
-	    }
-	    bufferedWriter.close();
-	}
-	Instant end = Instant.now();
-	System.out.println("Done. Execution time: " + Duration.between(start, end));
+            if (!currentOutputDirectory.exists()) {
+                currentOutputDirectory.mkdirs();
+            }
+            List<String> lines = cermineLineExtractor.extract(inputFile);
+            BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(outputFile));
+            for (String line : lines) {
+                bufferedWriter.write(line);
+                bufferedWriter.newLine();
+            }
+            bufferedWriter.close();
+        }
+        Instant end = Instant.now();
+        System.out.println("Done. Execution time: " + Duration.between(start, end));
     }
 
     private CerminePdfExtractor cerminePdfExtractor;
 
     public CermineLineExtractor() throws AnalysisException {
-	this.cerminePdfExtractor = new CerminePdfExtractor();
+        this.cerminePdfExtractor = new CerminePdfExtractor();
     }
 
     /**
@@ -96,41 +96,41 @@ public class CermineLineExtractor {
      * @param outputFile
      */
     public List<String> extract(File pdfFile) {
-	List<String> lines = new ArrayList<String>();
-	try {
-	    BxDocument bxDocument = this.cerminePdfExtractor.extractWithResolvedReadingOrder(pdfFile);
+        List<String> lines = new ArrayList<String>();
+        try {
+            BxDocument bxDocument = this.cerminePdfExtractor.extractWithResolvedReadingOrder(pdfFile);
 
-	    for (BxPage bxPage : bxDocument.asPages()) {
-		for (BxZone bxZone : bxPage) {
-		    for (BxLine bxLine : bxZone) {
-			String extractedLine = this.extractFromLine(bxLine);
-			lines.add(extractedLine);
+            for (BxPage bxPage : bxDocument.asPages()) {
+                for (BxZone bxZone : bxPage) {
+                    for (BxLine bxLine : bxZone) {
+                        String extractedLine = this.extractFromLine(bxLine);
+                        lines.add(extractedLine);
 
-		    }
-		}
+                    }
+                }
 
-	    }
-	} catch (IOException e) {
-	    // TODO Auto-generated catch block
-	    e.printStackTrace();
-	} catch (TimeoutException e) {
-	    // TODO Auto-generated catch block
-	    e.printStackTrace();
-	} catch (AnalysisException e) {
-	    // TODO Auto-generated catch block
-	    e.printStackTrace();
-	} catch (Exception e) {
-	    // TODO figure out why
-	    // InlineImageParseException/InvocationTargetException is not caught
-	    e.printStackTrace();
-	}
-	return lines;
+            }
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (TimeoutException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (AnalysisException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (Exception e) {
+            // TODO figure out why
+            // InlineImageParseException/InvocationTargetException is not caught
+            e.printStackTrace();
+        }
+        return lines;
     }
 
     protected String extractFromLine(BxLine bxLine) {
-	String fixedLine = TextUtils.fixAccents(bxLine.toText());
-	fixedLine = CsvUtils.normalize(fixedLine);
-	return fixedLine;
+        String fixedLine = TextUtils.fixAccents(bxLine.toText());
+        fixedLine = CsvUtils.normalize(fixedLine);
+        return fixedLine;
 
     }
 

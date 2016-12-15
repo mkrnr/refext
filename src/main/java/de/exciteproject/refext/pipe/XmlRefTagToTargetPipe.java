@@ -37,85 +37,85 @@ public class XmlRefTagToTargetPipe extends Pipe implements Serializable {
     // Serialization
 
     public XmlRefTagToTargetPipe(String referenceTagName, String otherInReferenceTagName, String referenceTargetLabel,
-	    String otherInReferenceTargetLabel, String otherTargetLabel) {
-	this.referenceTagName = referenceTagName;
-	this.otherInReferenceTagName = otherInReferenceTagName;
-	this.referenceTargetLabel = referenceTargetLabel;
-	this.otherInReferenceTargetLabel = otherInReferenceTargetLabel;
-	this.otherTargetLabel = otherTargetLabel;
+            String otherInReferenceTargetLabel, String otherTargetLabel) {
+        this.referenceTagName = referenceTagName;
+        this.otherInReferenceTagName = otherInReferenceTagName;
+        this.referenceTargetLabel = referenceTargetLabel;
+        this.otherInReferenceTargetLabel = otherInReferenceTargetLabel;
+        this.otherTargetLabel = otherTargetLabel;
     }
 
     @Override
     public Instance pipe(Instance carrier) {
 
-	TokenSequence ts = (TokenSequence) carrier.getData();
+        TokenSequence ts = (TokenSequence) carrier.getData();
 
-	boolean inReferenceString = false;
-	boolean inOtherInReferenceString = false;
+        boolean inReferenceString = false;
+        boolean inOtherInReferenceString = false;
 
-	for (int i = 0; i < ts.size(); i++) {
-	    Token t = ts.get(i);
-	    String line = t.getText();
-	    String targetLabel;
-	    if (line.contains("<" + this.referenceTagName + ">")) {
-		inReferenceString = true;
-		line = line.replaceFirst("<" + this.referenceTagName + ">", "");
-		targetLabel = "B-" + this.referenceTargetLabel;
-	    } else {
-		if (line.contains("<" + this.otherInReferenceTagName + ">")) {
-		    if (inReferenceString) {
-			inOtherInReferenceString = true;
-			line = line.replaceFirst("<" + this.otherInReferenceTagName + ">", "");
-			targetLabel = "B-" + this.otherInReferenceTargetLabel;
-		    } else {
-			throw new IllegalStateException(
-				"<" + inOtherInReferenceString + "> not inside <" + this.referenceTagName + ">");
-		    }
-		} else {
-		    if (inReferenceString) {
-			if (inOtherInReferenceString) {
-			    targetLabel = "I-" + this.otherInReferenceTargetLabel;
-			} else {
-			    targetLabel = "I-" + this.referenceTargetLabel;
-			}
-		    } else {
-			targetLabel = this.otherTargetLabel;
-		    }
-		}
-	    }
+        for (int i = 0; i < ts.size(); i++) {
+            Token t = ts.get(i);
+            String line = t.getText();
+            String targetLabel;
+            if (line.contains("<" + this.referenceTagName + ">")) {
+                inReferenceString = true;
+                line = line.replaceFirst("<" + this.referenceTagName + ">", "");
+                targetLabel = "B-" + this.referenceTargetLabel;
+            } else {
+                if (line.contains("<" + this.otherInReferenceTagName + ">")) {
+                    if (inReferenceString) {
+                        inOtherInReferenceString = true;
+                        line = line.replaceFirst("<" + this.otherInReferenceTagName + ">", "");
+                        targetLabel = "B-" + this.otherInReferenceTargetLabel;
+                    } else {
+                        throw new IllegalStateException(
+                                "<" + inOtherInReferenceString + "> not inside <" + this.referenceTagName + ">");
+                    }
+                } else {
+                    if (inReferenceString) {
+                        if (inOtherInReferenceString) {
+                            targetLabel = "I-" + this.otherInReferenceTargetLabel;
+                        } else {
+                            targetLabel = "I-" + this.referenceTargetLabel;
+                        }
+                    } else {
+                        targetLabel = this.otherTargetLabel;
+                    }
+                }
+            }
 
-	    if (line.contains("</" + this.referenceTagName + ">")) {
-		line = line.replaceFirst("</" + this.referenceTagName + ">", "");
-		inReferenceString = false;
-	    }
-	    if (line.contains("</" + this.otherInReferenceTagName + ">")) {
-		line = line.replaceFirst("</" + this.otherInReferenceTagName + ">", "");
-		inOtherInReferenceString = false;
-	    }
-	    t.setText(targetLabel + " " + line);
-	}
+            if (line.contains("</" + this.referenceTagName + ">")) {
+                line = line.replaceFirst("</" + this.referenceTagName + ">", "");
+                inReferenceString = false;
+            }
+            if (line.contains("</" + this.otherInReferenceTagName + ">")) {
+                line = line.replaceFirst("</" + this.otherInReferenceTagName + ">", "");
+                inOtherInReferenceString = false;
+            }
+            t.setText(targetLabel + " " + line);
+        }
 
-	return carrier;
+        return carrier;
     }
 
     private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
-	int version = in.readInt();
+        int version = in.readInt();
 
-	this.referenceTagName = (String) in.readObject();
-	this.otherInReferenceTagName = (String) in.readObject();
-	this.referenceTargetLabel = (String) in.readObject();
-	this.otherInReferenceTargetLabel = (String) in.readObject();
-	this.otherTargetLabel = (String) in.readObject();
+        this.referenceTagName = (String) in.readObject();
+        this.otherInReferenceTagName = (String) in.readObject();
+        this.referenceTargetLabel = (String) in.readObject();
+        this.otherInReferenceTargetLabel = (String) in.readObject();
+        this.otherTargetLabel = (String) in.readObject();
     }
 
     private void writeObject(ObjectOutputStream out) throws IOException {
-	out.writeInt(CURRENT_SERIAL_VERSION);
+        out.writeInt(CURRENT_SERIAL_VERSION);
 
-	out.writeObject(this.referenceTagName);
-	out.writeObject(this.otherInReferenceTagName);
-	out.writeObject(this.referenceTargetLabel);
-	out.writeObject(this.otherInReferenceTargetLabel);
-	out.writeObject(this.otherTargetLabel);
+        out.writeObject(this.referenceTagName);
+        out.writeObject(this.otherInReferenceTagName);
+        out.writeObject(this.referenceTargetLabel);
+        out.writeObject(this.otherInReferenceTargetLabel);
+        out.writeObject(this.otherTargetLabel);
     }
 
 }

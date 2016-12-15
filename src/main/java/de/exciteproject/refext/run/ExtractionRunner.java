@@ -35,46 +35,46 @@ import pl.edu.icm.cermine.exception.AnalysisException;
 public class ExtractionRunner {
 
     public static void main(String[] args) throws IOException, AnalysisException, ClassNotFoundException {
-	File inputDir = new File(args[0]);
-	File outputDir = new File(args[1]);
-	File crfModelFile = new File(args[2]);
+        File inputDir = new File(args[0]);
+        File outputDir = new File(args[1]);
+        File crfModelFile = new File(args[2]);
 
-	if (!outputDir.exists()) {
-	    outputDir.mkdirs();
-	}
+        if (!outputDir.exists()) {
+            outputDir.mkdirs();
+        }
 
-	ExtractionRunner extractionRunner = new ExtractionRunner(crfModelFile);
-	for (File inputFile : de.exciteproject.refext.util.FileUtils.listFilesRecursively(inputDir)) {
-	    System.out.println(inputFile);
-	    File currentOutputDirectory;
+        ExtractionRunner extractionRunner = new ExtractionRunner(crfModelFile);
+        for (File inputFile : de.exciteproject.refext.util.FileUtils.listFilesRecursively(inputDir)) {
+            System.out.println(inputFile);
+            File currentOutputDirectory;
 
-	    String subDirectories = inputFile.getParentFile().getAbsolutePath().replaceFirst(inputDir.getAbsolutePath(),
-		    "");
-	    currentOutputDirectory = new File(outputDir.getAbsolutePath() + File.separator + subDirectories);
+            String subDirectories = inputFile.getParentFile().getAbsolutePath().replaceFirst(inputDir.getAbsolutePath(),
+                    "");
+            currentOutputDirectory = new File(outputDir.getAbsolutePath() + File.separator + subDirectories);
 
-	    String outputFileName = FilenameUtils.removeExtension(inputFile.getName()) + ".txt";
-	    File outputFile = new File(currentOutputDirectory.getAbsolutePath() + File.separator + outputFileName);
+            String outputFileName = FilenameUtils.removeExtension(inputFile.getName()) + ".txt";
+            File outputFile = new File(currentOutputDirectory.getAbsolutePath() + File.separator + outputFileName);
 
-	    // skip files that are larger than 10MB
-	    if (inputFile.length() > 10000000) {
-		continue;
-	    }
-	    // skip if outputFile already exists
-	    if (outputFile.exists()) {
-		continue;
-	    }
-	    List<String> annotatedLines = extractionRunner.run(inputFile);
-	    List<String> referenceStrings = ReferenceStringFromAnnotatedLinesExtractor.extract(annotatedLines);
-	    BibReferenceParser<BibEntry> bibReferenceParser = CRFBibReferenceParser.getInstance();
+            // skip files that are larger than 10MB
+            if (inputFile.length() > 10000000) {
+                continue;
+            }
+            // skip if outputFile already exists
+            if (outputFile.exists()) {
+                continue;
+            }
+            List<String> annotatedLines = extractionRunner.run(inputFile);
+            List<String> referenceStrings = ReferenceStringFromAnnotatedLinesExtractor.extract(annotatedLines);
+            BibReferenceParser<BibEntry> bibReferenceParser = CRFBibReferenceParser.getInstance();
 
-	    BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(outputFile));
-	    for (String referenceString : referenceStrings) {
-		BibEntry bibEntry = bibReferenceParser.parseBibReference(referenceString);
-		bufferedWriter.write(bibEntry.toBibTeX());
-		bufferedWriter.newLine();
-	    }
-	    bufferedWriter.close();
-	}
+            BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(outputFile));
+            for (String referenceString : referenceStrings) {
+                BibEntry bibEntry = bibReferenceParser.parseBibReference(referenceString);
+                bufferedWriter.write(bibEntry.toBibTeX());
+                bufferedWriter.newLine();
+            }
+            bufferedWriter.close();
+        }
     }
 
     private CRF crf;
@@ -83,41 +83,41 @@ public class ExtractionRunner {
     private CermineLineLayoutExtractor cermineLineLayoutExtractor;
 
     public ExtractionRunner(File crfModelFile) throws IOException, AnalysisException {
-	this.crf = (CRF) FileUtils.readObject(crfModelFile);
-	this.pipe = this.crf.getInputPipe();
-	this.cermineLineLayoutExtractor = new CermineLineLayoutExtractor();
+        this.crf = (CRF) FileUtils.readObject(crfModelFile);
+        this.pipe = this.crf.getInputPipe();
+        this.cermineLineLayoutExtractor = new CermineLineLayoutExtractor();
     }
 
     public List<String> run(File pdfFile) throws IOException, AnalysisException {
 
-	List<String> linesWithLayout = this.cermineLineLayoutExtractor.extract(pdfFile);
+        List<String> linesWithLayout = this.cermineLineLayoutExtractor.extract(pdfFile);
 
-	StringBuilder lineStringBuilder = new StringBuilder();
-	for (String line : linesWithLayout) {
-	    lineStringBuilder.append(line).append("\n");
-	}
-	BufferedReader lineReader = new BufferedReader(new StringReader(lineStringBuilder.toString()));
+        StringBuilder lineStringBuilder = new StringBuilder();
+        for (String line : linesWithLayout) {
+            lineStringBuilder.append(line).append("\n");
+        }
+        BufferedReader lineReader = new BufferedReader(new StringReader(lineStringBuilder.toString()));
 
-	this.inputInstances = new InstanceList(this.pipe);
-	this.inputInstances.addThruPipe(new LineGroupIterator(lineReader, Pattern.compile("^\\s*$"), true));
-	lineReader.close();
+        this.inputInstances = new InstanceList(this.pipe);
+        this.inputInstances.addThruPipe(new LineGroupIterator(lineReader, Pattern.compile("^\\s*$"), true));
+        lineReader.close();
 
-	CRFTrainerByLabelLikelihood trainer = new CRFTrainerByLabelLikelihood(this.crf);
-	trainer.setUseSparseWeights(false);
+        CRFTrainerByLabelLikelihood trainer = new CRFTrainerByLabelLikelihood(this.crf);
+        trainer.setUseSparseWeights(false);
 
-	List<String> annotatedLines = new ArrayList<String>();
+        List<String> annotatedLines = new ArrayList<String>();
 
-	for (Instance instance : this.inputInstances) {
-	    @SuppressWarnings("unchecked")
-	    Sequence<String> output = this.crf.transduce((Sequence<String>) instance.getData());
-	    for (int i = 0; i < output.size(); i++) {
+        for (Instance instance : this.inputInstances) {
+            @SuppressWarnings("unchecked")
+            Sequence<String> output = this.crf.transduce((Sequence<String>) instance.getData());
+            for (int i = 0; i < output.size(); i++) {
 
-		// TODO: merge B-REF and I-REF lines
-		annotatedLines.add(output.get(i).toString() + "\t" + linesWithLayout.get(i).split("\t")[0]);
+                // TODO: merge B-REF and I-REF lines
+                annotatedLines.add(output.get(i).toString() + "\t" + linesWithLayout.get(i).split("\t")[0]);
 
-	    }
-	}
-	return annotatedLines;
+            }
+        }
+        return annotatedLines;
     }
 
 }

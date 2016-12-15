@@ -11,24 +11,24 @@ import py4j.GatewayServer;
 public class ExtractionRunnerEntryPoint {
 
     public static void main(String[] args) throws IOException, AnalysisException {
-	GatewayServer gatewayServer = new GatewayServer(new ExtractionRunnerEntryPoint(new File(args[0])));
-	gatewayServer.start();
+        GatewayServer gatewayServer = new GatewayServer(new ExtractionRunnerEntryPoint(new File(args[0])));
+        gatewayServer.start();
 
-	// override logger settings
-	GatewayServer.turnLoggingOn();
-	Logger logger = Logger.getLogger("py4j");
-	logger.setLevel(Level.SEVERE);
+        // override logger settings
+        GatewayServer.turnLoggingOn();
+        Logger logger = Logger.getLogger("py4j");
+        logger.setLevel(Level.SEVERE);
 
-	System.out.println("Started gateway server");
+        System.out.println("Started gateway server");
     }
 
     private ExtractionRunner extractionRunner;
 
     public ExtractionRunnerEntryPoint(File crfModelFile) throws IOException, AnalysisException {
-	this.extractionRunner = new ExtractionRunner(crfModelFile);
+        this.extractionRunner = new ExtractionRunner(crfModelFile);
     }
 
     public ExtractionRunner getExtractionRunner() {
-	return this.extractionRunner;
+        return this.extractionRunner;
     }
 }
