@@ -64,6 +64,11 @@
       <artifactId>py4j</artifactId>
       <version>0.10.4</version>
     </dependency>
+    <dependency>
+      <groupId>com.beust</groupId>
+      <artifactId>jcommander</artifactId>
+      <version>1.58</version>
+    </dependency>
   </dependencies>
   <repositories>
     <repository>

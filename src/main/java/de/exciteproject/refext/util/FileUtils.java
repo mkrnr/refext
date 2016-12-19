@@ -10,6 +10,18 @@ import java.util.List;
 
 public class FileUtils {
 
+    public static List<File> asList(File file) throws IOException {
+        List<File> files = new ArrayList<File>();
+        if (file.isFile()) {
+            files.add(file);
+        } else {
+            if (file.isDirectory()) {
+                files = de.exciteproject.refext.util.FileUtils.listFilesRecursively(file);
+            }
+        }
+        return files;
+    }
+
     public static void copyFiles(List<File> filesToCopy, File inputDirectory, File outputDirectory) throws IOException {
         if (!outputDirectory.exists()) {
             outputDirectory.mkdirs();
@@ -19,6 +31,17 @@ public class FileUtils {
                     + fileToCopy.getAbsolutePath().replaceFirst(inputDirectory.getAbsolutePath(), ""));
             org.apache.commons.io.FileUtils.copyFile(fileToCopy, destinationFile);
         }
+    }
+
+    public static File getDirctory(File file) {
+        if (file.isDirectory()) {
+            return file;
+        } else {
+            if (file.isFile()) {
+                return file.getParentFile();
+            }
+        }
+        return null;
     }
 
     public static File getTempFile(String filePrefix, boolean deleteOnExit) {
@@ -84,4 +107,5 @@ public class FileUtils {
         }
         directory.mkdirs();
     }
+
 }
