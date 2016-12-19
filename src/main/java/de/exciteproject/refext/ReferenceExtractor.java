@@ -32,7 +32,7 @@ import pl.edu.icm.cermine.exception.AnalysisException;
  * information (see {@link CermineLineLayoutExtractor}).
  *
  */
-public class ExtractionRunner {
+public class ReferenceExtractor {
 
     public static void main(String[] args) throws IOException, AnalysisException, ClassNotFoundException {
         File inputDir = new File(args[0]);
@@ -43,7 +43,7 @@ public class ExtractionRunner {
             outputDir.mkdirs();
         }
 
-        ExtractionRunner extractionRunner = new ExtractionRunner(crfModelFile);
+        ReferenceExtractor extractionRunner = new ReferenceExtractor(crfModelFile);
         for (File inputFile : de.exciteproject.refext.util.FileUtils.listFilesRecursively(inputDir)) {
             System.out.println(inputFile);
             File currentOutputDirectory;
@@ -82,7 +82,7 @@ public class ExtractionRunner {
     private Pipe pipe;
     private CermineLineLayoutExtractor cermineLineLayoutExtractor;
 
-    public ExtractionRunner(File crfModelFile) throws IOException, AnalysisException {
+    public ReferenceExtractor(File crfModelFile) throws IOException, AnalysisException {
         this.crf = (CRF) FileUtils.readObject(crfModelFile);
         this.pipe = this.crf.getInputPipe();
         this.cermineLineLayoutExtractor = new CermineLineLayoutExtractor();

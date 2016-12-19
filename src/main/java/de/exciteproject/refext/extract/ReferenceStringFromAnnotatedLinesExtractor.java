@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.exciteproject.refext.ExtractionRunner;
+import de.exciteproject.refext.ReferenceExtractor;
 import pl.edu.icm.cermine.bibref.BibReferenceParser;
 import pl.edu.icm.cermine.bibref.CRFBibReferenceParser;
 import pl.edu.icm.cermine.bibref.model.BibEntry;
@@ -41,7 +41,7 @@ public class ReferenceStringFromAnnotatedLinesExtractor {
         File inputFile = new File(args[0]);
         // File outputFile = new File(args[1]);
         File crfModelFile = new File(args[2]);
-        ExtractionRunner extractionRunner = new ExtractionRunner(crfModelFile);
+        ReferenceExtractor extractionRunner = new ReferenceExtractor(crfModelFile);
 
         List<String> lines = extractionRunner.run(inputFile);
 

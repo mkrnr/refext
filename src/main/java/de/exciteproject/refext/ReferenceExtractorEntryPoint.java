@@ -8,10 +8,10 @@ import java.util.logging.Logger;
 import pl.edu.icm.cermine.exception.AnalysisException;
 import py4j.GatewayServer;
 
-public class ExtractionRunnerEntryPoint {
+public class ReferenceExtractorEntryPoint {
 
     public static void main(String[] args) throws IOException, AnalysisException {
-        GatewayServer gatewayServer = new GatewayServer(new ExtractionRunnerEntryPoint(new File(args[0])));
+        GatewayServer gatewayServer = new GatewayServer(new ReferenceExtractorEntryPoint(new File(args[0])));
         gatewayServer.start();
 
         // override logger settings
@@ -22,13 +22,13 @@ public class ExtractionRunnerEntryPoint {
         System.out.println("Started gateway server");
     }
 
-    private ExtractionRunner extractionRunner;
+    private ReferenceExtractor extractionRunner;
 
-    public ExtractionRunnerEntryPoint(File crfModelFile) throws IOException, AnalysisException {
-        this.extractionRunner = new ExtractionRunner(crfModelFile);
+    public ReferenceExtractorEntryPoint(File crfModelFile) throws IOException, AnalysisException {
+        this.extractionRunner = new ReferenceExtractor(crfModelFile);
     }
 
-    public ExtractionRunner getExtractionRunner() {
+    public ReferenceExtractor getExtractionRunner() {
         return this.extractionRunner;
     }
 }
