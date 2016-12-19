@@ -1,4 +1,4 @@
-package de.exciteproject.refext.run;
+package de.exciteproject.refext;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
