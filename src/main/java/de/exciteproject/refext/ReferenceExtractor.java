@@ -21,7 +21,7 @@ import cc.mallet.types.InstanceList;
 import cc.mallet.types.Sequence;
 import cc.mallet.util.FileUtils;
 import de.exciteproject.refext.extract.CermineLineLayoutExtractor;
-import de.exciteproject.refext.extract.ReferenceStringFromAnnotatedLinesExtractor;
+import de.exciteproject.refext.extract.ReferenceFromAnnotatedLinesExtractor;
 import pl.edu.icm.cermine.bibref.BibReferenceParser;
 import pl.edu.icm.cermine.bibref.CRFBibReferenceParser;
 import pl.edu.icm.cermine.bibref.model.BibEntry;
@@ -63,8 +63,8 @@ public class ReferenceExtractor {
             if (outputFile.exists()) {
                 continue;
             }
-            List<String> annotatedLines = extractionRunner.run(inputFile);
-            List<String> referenceStrings = ReferenceStringFromAnnotatedLinesExtractor.extract(annotatedLines);
+            List<String> annotatedLines = extractionRunner.extractAnnotatedLines(inputFile);
+            List<String> referenceStrings = ReferenceFromAnnotatedLinesExtractor.extract(annotatedLines);
             BibReferenceParser<BibEntry> bibReferenceParser = CRFBibReferenceParser.getInstance();
 
             BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(outputFile));
@@ -88,7 +88,7 @@ public class ReferenceExtractor {
         this.cermineLineLayoutExtractor = new CermineLineLayoutExtractor();
     }
 
-    public List<String> run(File pdfFile) throws IOException, AnalysisException {
+    public List<String> extractAnnotatedLines(File pdfFile) throws IOException, AnalysisException {
 
         List<String> linesWithLayout = this.cermineLineLayoutExtractor.extract(pdfFile);
 
@@ -112,12 +112,16 @@ public class ReferenceExtractor {
             Sequence<String> output = this.crf.transduce((Sequence<String>) instance.getData());
             for (int i = 0; i < output.size(); i++) {
 
-                // TODO: merge B-REF and I-REF lines
                 annotatedLines.add(output.get(i).toString() + "\t" + linesWithLayout.get(i).split("\t")[0]);
-
             }
         }
         return annotatedLines;
+    }
+
+    public List<String> extractReferences(File pdfFile) throws IOException, AnalysisException {
+        List<String> annotatedLines = this.extractAnnotatedLines(pdfFile);
+        List<String> referenceStrings = ReferenceFromAnnotatedLinesExtractor.extract(annotatedLines);
+        return referenceStrings;
     }
 
 }

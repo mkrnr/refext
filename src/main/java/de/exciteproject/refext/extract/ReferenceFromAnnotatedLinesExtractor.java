@@ -11,7 +11,7 @@ import pl.edu.icm.cermine.bibref.CRFBibReferenceParser;
 import pl.edu.icm.cermine.bibref.model.BibEntry;
 import pl.edu.icm.cermine.exception.AnalysisException;
 
-public class ReferenceStringFromAnnotatedLinesExtractor {
+public class ReferenceFromAnnotatedLinesExtractor {
 
     public static List<String> extract(List<String> inputLines) {
         List<String> references = new ArrayList<String>();
@@ -43,9 +43,9 @@ public class ReferenceStringFromAnnotatedLinesExtractor {
         File crfModelFile = new File(args[2]);
         ReferenceExtractor extractionRunner = new ReferenceExtractor(crfModelFile);
 
-        List<String> lines = extractionRunner.run(inputFile);
+        List<String> lines = extractionRunner.extractAnnotatedLines(inputFile);
 
-        List<String> references = ReferenceStringFromAnnotatedLinesExtractor.extract(lines);
+        List<String> references = ReferenceFromAnnotatedLinesExtractor.extract(lines);
 
         BibReferenceParser<BibEntry> bibReferenceParser = CRFBibReferenceParser.getInstance();
         for (String reference : references) {
