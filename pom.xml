@@ -31,7 +31,6 @@
       </plugin>
     </plugins>
   </build>
-
   <dependencies>
     <dependency>
       <groupId>junit</groupId>
@@ -42,8 +41,15 @@
     <dependency>
       <groupId>cc.mallet</groupId>
       <artifactId>mallet</artifactId>
-      <version>2.0.8RC3</version>
-    </dependency>
+      <version>2.0.8</version>
+	  <exclusions>
+	    <exclusion> 
+	      <groupId>net.sf.trove4j</groupId>
+          <artifactId>trove4j</artifactId>
+          <version>2.0.2</version>
+        </exclusion>
+      </exclusions>
+	</dependency>
   	<dependency>
   	  <groupId>pl.edu.icm.cermine</groupId>
   	  <artifactId>cermine-impl</artifactId>
