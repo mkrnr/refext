@@ -46,8 +46,8 @@ public class SupervisedCrfTrainer {
         pipes.add(new TokenSequenceMatchDataAndTarget(Pattern.compile("([A-Z]*\\-*[A-Z]+) (.*)"), 2, 1));
         pipes.add(new LayoutPipe("INDENT", "PREVGAP", "DIFFZONE", "\\t"));
 
-        // pipes.add(new NamePipe("FIRSTNAME", new File(args[2])));
-        // pipes.add(new NamePipe("LASTNAME", new File(args[3])));
+        // pipes.add(new NamePipe("FIRSTNAME", new File(args[3])));
+        // pipes.add(new NamePipe("LASTNAME", new File(args[4])));
         // pipes.add(new TokenText());
         // pipes.add(new TokenTextCharSuffix("C1=", 1));
         // pipes.add(new TokenTextCharSuffix("C2=", 2));
