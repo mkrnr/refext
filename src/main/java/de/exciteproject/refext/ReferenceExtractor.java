@@ -34,11 +34,10 @@ public class ReferenceExtractor {
     public static void main(String[] args) throws IOException, AnalysisException {
         ReferenceExtractor referenceExtractor = new ReferenceExtractor();
 
-        JCommander jCommander;
+        JCommander jCommander = null;
         try {
             jCommander = new JCommander(referenceExtractor, args);
         } catch (ParameterException e) {
-            System.err.println(e.getMessage());
             e.printStackTrace();
             return;
         }
@@ -50,7 +49,7 @@ public class ReferenceExtractor {
         }
     }
 
-    @Parameter(names = { "-h", "--help" }, description = "print information about available parameters")
+    @Parameter(names = { "-h", "--help" }, description = "print information about available parameters", help = true)
     private boolean help;
 
     @Parameter(names = { "-bibtex", "--extract-bibtex-references" }, description = "will extract bibtex references")
@@ -63,8 +62,7 @@ public class ReferenceExtractor {
             "--skip-existing-ouput-files" }, description = "will skip files for which there is already an output file")
     private boolean skipIfOutputExists = false;
 
-    @Parameter(names = { "-sizeLimit",
-            "--pdf-file-size-limit" }, description = "limit in byte for pdf files, default: 10000000 (10 MB)")
+    @Parameter(names = { "-sizeLimit", "--pdf-file-size-limit" }, description = "limit in byte for pdf files")
     private long pdfFileSizeLimit = 10000000;
 
     @Parameter(names = { "-crfModel",
