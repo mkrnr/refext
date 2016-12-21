@@ -25,8 +25,7 @@ public class ReferenceExtractorEntryPoint {
     private ReferenceExtractor extractionRunner;
 
     public ReferenceExtractorEntryPoint(File crfModelFile) throws IOException, AnalysisException {
-        this.extractionRunner = new ReferenceExtractor();
-        this.extractionRunner.init(crfModelFile);
+        this.extractionRunner = new ReferenceExtractor(crfModelFile);
     }
 
     public ReferenceExtractor getExtractionRunner() {
