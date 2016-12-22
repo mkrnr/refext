@@ -80,13 +80,19 @@ public class NamePipe extends Pipe implements Serializable {
         return instance;
     }
 
+    @SuppressWarnings("unchecked")
     private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+        // read serial version
+        in.readInt();
+
         this.featureName = (String) in.readObject();
+        this.nameCountMap = (HashMap<String, Double>) in.readObject();
     }
 
     private void writeObject(ObjectOutputStream out) throws IOException {
         out.writeInt(CURRENT_SERIAL_VERSION);
         out.writeObject(this.featureName);
+        out.writeObject(this.nameCountMap);
     }
 
 }
