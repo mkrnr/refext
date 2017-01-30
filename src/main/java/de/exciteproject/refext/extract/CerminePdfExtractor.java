@@ -7,8 +7,6 @@ import java.io.InputStream;
 
 import pl.edu.icm.cermine.ComponentConfiguration;
 import pl.edu.icm.cermine.ExtractionUtils;
-import pl.edu.icm.cermine.configuration.ContentExtractorConfig;
-import pl.edu.icm.cermine.configuration.ContentExtractorConfigLoader;
 import pl.edu.icm.cermine.exception.AnalysisException;
 import pl.edu.icm.cermine.structure.ITextCharacterExtractor;
 import pl.edu.icm.cermine.structure.model.BxDocument;
@@ -22,8 +20,7 @@ public class CerminePdfExtractor {
     private ComponentConfiguration componentConfig;
 
     public CerminePdfExtractor() throws AnalysisException {
-        ContentExtractorConfig contentExtractorConfig = new ContentExtractorConfigLoader().loadConfiguration();
-        this.componentConfig = new ComponentConfiguration(contentExtractorConfig);
+        this.componentConfig = new ComponentConfiguration();
     }
 
     /**
