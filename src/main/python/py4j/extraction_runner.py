@@ -9,7 +9,7 @@ import argparse
 
 # set argument parser
 parser = argparse.ArgumentParser(description='Process some integers.')
-parser.add_argument('pdf', 
+parser.add_argument('pdf',
                    help='path to a pdf file')
 args = parser.parse_args()
 
@@ -19,7 +19,7 @@ logger.setLevel(logging.CRITICAL)
 logger.addHandler(logging.StreamHandler())
 
 gateway = JavaGateway(
-gateway_parameters=GatewayParameters(  
+gateway_parameters=GatewayParameters(
         address='127.0.0.1',
         port=25333,
         auto_close=True
@@ -27,9 +27,9 @@ gateway_parameters=GatewayParameters(
 
 runner = gateway.entry_point.getExtractionRunner()
 file = gateway.jvm.java.io.File(args.pdf)
-lines=runner.run(file)
+lines=runner.extractReferencesFromPdf(file)
 
 #TODO write to data base
 for line in lines:
-    print(str(line))
+    print(line.encode('utf-8'))
 
