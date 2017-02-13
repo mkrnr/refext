@@ -5,7 +5,7 @@
    version 1.0, as published by http://www.opensource.org.  For further
    information, see the file `LICENSE' included with this distribution. */
 
-package de.exciteproject.refext.pipe;
+package de.exciteproject.refext.train.pipe;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;

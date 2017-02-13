@@ -25,9 +25,9 @@ import cc.mallet.pipe.TokenSequence2FeatureVectorSequence;
 import cc.mallet.pipe.TokenSequenceMatchDataAndTarget;
 import cc.mallet.pipe.iterator.LineGroupIterator;
 import cc.mallet.types.InstanceList;
-import de.exciteproject.refext.pipe.FeaturePipeProvider;
-import de.exciteproject.refext.pipe.LayoutPipe;
-import de.exciteproject.refext.pipe.XmlRefTagToTargetPipe;
+import de.exciteproject.refext.train.pipe.FeaturePipeProvider;
+import de.exciteproject.refext.train.pipe.LayoutPipe;
+import de.exciteproject.refext.train.pipe.XmlRefTagToTargetPipe;
 
 /**
  * Class for training a supervised CRF for extracting reference strings from a
