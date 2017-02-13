@@ -25,6 +25,9 @@ public class ReferenceLineMerger {
                 currentReference += " " + lineSplit[1];
             }
         }
+        if (currentReference != null) {
+            references.add(currentReference);
+        }
         return references;
 
     }
