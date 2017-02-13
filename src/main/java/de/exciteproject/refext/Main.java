@@ -15,7 +15,6 @@ import com.beust.jcommander.ParameterException;
 import com.beust.jcommander.converters.FileConverter;
 
 import de.exciteproject.refext.util.FileUtils;
-import pl.edu.icm.cermine.bibref.model.BibEntry;
 import pl.edu.icm.cermine.exception.AnalysisException;
 
 public class Main {
@@ -40,12 +39,6 @@ public class Main {
 
     @Parameter(names = { "-h", "--help" }, description = "print information about available parameters", help = true)
     private boolean help;
-
-    @Parameter(names = { "-bibtex", "--extract-bibtex-references" }, description = "will extract bibtex references")
-    private boolean extractBibtex = false;
-
-    @Parameter(names = { "-refs", "--extract-reference-strings" }, description = "will extract reference strings")
-    private boolean extractReferenceStrings = false;
 
     @Parameter(names = { "-skipExist",
             "--skip-existing-ouput-files" }, description = "will skip files for which there is already an output file")
@@ -76,13 +69,7 @@ public class Main {
         File currentOutputDirectory = new File(this.outputDir.getAbsolutePath() + File.separator + subDirectories);
 
         String outputFileName = FilenameUtils.removeExtension(inputFile.getName());
-        if (this.extractBibtex) {
-            outputFileName += ".bib";
-        } else {
-            if (this.extractReferenceStrings) {
-                outputFileName += ".txt";
-            }
-        }
+        outputFileName += ".txt";
 
         File outputFile = new File(currentOutputDirectory.getAbsolutePath() + File.separator + outputFileName);
         return outputFile;
@@ -92,10 +79,6 @@ public class Main {
         if (((this.pdfFile == null) && (this.layoutFile == null))
                 || ((this.pdfFile != null) && (this.layoutFile != null))) {
             throw new IllegalArgumentException("specify either -pdf or -layout");
-        }
-
-        if (this.extractReferenceStrings == this.extractBibtex) {
-            throw new IllegalArgumentException("specify either -bibtex or -refs");
         }
 
         if (!this.outputDir.exists()) {
@@ -143,20 +126,11 @@ public class Main {
             }
             BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(outputFile));
 
-            if (this.extractReferenceStrings) {
-                for (String referenceString : referenceStrings) {
-                    bufferedWriter.write(referenceString);
-                    bufferedWriter.newLine();
-                }
-            } else {
-                if (this.extractBibtex) {
-                    List<BibEntry> bibEntries = referenceExtractor.extractBibEntriesFromReferences(referenceStrings);
-                    for (BibEntry bibEntry : bibEntries) {
-                        bufferedWriter.write(bibEntry.toBibTeX());
-                        bufferedWriter.newLine();
-                    }
-                }
+            for (String referenceString : referenceStrings) {
+                bufferedWriter.write(referenceString);
+                bufferedWriter.newLine();
             }
+
             bufferedWriter.close();
         }
     }
