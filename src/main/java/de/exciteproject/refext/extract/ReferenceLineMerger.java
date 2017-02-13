@@ -22,7 +22,10 @@ public class ReferenceLineMerger {
                 currentReference = lineSplit[1];
             }
             if (lineSplit[0].equals("I-REF")) {
-                currentReference += " " + lineSplit[1];
+                if (!currentReference.endsWith(" ")) {
+                    currentReference += " ";
+                }
+                currentReference += lineSplit[1];
             }
         }
         if (currentReference != null) {
