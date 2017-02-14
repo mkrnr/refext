@@ -59,9 +59,9 @@ public class ReferenceExtractorTrainer {
         Pattern forbiddenPat = Pattern.compile("\\s");
         Pattern allowedPat = Pattern.compile(".*");
         List<Integer> orders = new ArrayList<Integer>();
-        orders.add(0);
-        orders.add(1);
-        // orders.add(2);
+        for (int i = 0; i <= n; i++) {
+            orders.add(i);
+        }
         int[] ordersArray = null;
         if (orders.size() > 0) {
             ordersArray = ArrayUtils.toPrimitive(orders.toArray(new Integer[orders.size()]));
