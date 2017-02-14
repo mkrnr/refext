@@ -15,20 +15,26 @@ import cc.mallet.types.TokenSequence;
  * Input per line:
  * text[tab]x-coordinate[tab]y-coordinate[tab]height[tab]width[tab]zone-id
  */
-public class LayoutPipe extends Pipe implements Serializable {
+public abstract class LayoutPipe extends Pipe implements Serializable {
 
     private static final long serialVersionUID = 1L;
     private static final int CURRENT_SERIAL_VERSION = 0;
 
-    private String indentFeatureLabel;
-    private String gapAboveLabel;
-    private String differentZoneLabel;
+    protected double prevXPos = Double.MAX_VALUE;
+    protected double prevYPos = Double.MAX_VALUE;
+    protected double prevHeight = Double.MAX_VALUE;
+    protected double prevWidth = Double.MAX_VALUE;
+    protected double prevZoneId = 0.0;
+    protected double thisXPos;
+    protected double thisYPos;
+    protected double thisHeight;
+    protected double thisWidth;
+    protected double thisZoneId;
+    protected String featureLabel;
     private String csvSeparator;
 
-    public LayoutPipe(String indentFeatureLabel, String gapAboveLabel, String differentZoneLabel, String csvSeparator) {
-        this.indentFeatureLabel = indentFeatureLabel;
-        this.gapAboveLabel = gapAboveLabel;
-        this.differentZoneLabel = differentZoneLabel;
+    public LayoutPipe(String featureLabel, String csvSeparator) {
+        this.featureLabel = featureLabel;
         this.csvSeparator = csvSeparator;
 
     }
@@ -36,14 +42,7 @@ public class LayoutPipe extends Pipe implements Serializable {
     @Override
     public Instance pipe(Instance carrier) {
         TokenSequence tokenSequence = (TokenSequence) carrier.getData();
-        double prevXPos = Double.MAX_VALUE;
-        double prevYPos = Double.MAX_VALUE;
-        double prevHeight = Double.MAX_VALUE;
-        double prevWidth = Double.MAX_VALUE;
-        double prevZoneId = 0.0;
-        double prevDistance = Double.MAX_VALUE;
 
-        boolean prevWasIndent = false;
         for (int i = 0; i < tokenSequence.size(); i++) {
             Token token = tokenSequence.get(i);
             String tokenText = token.getText();
@@ -58,50 +57,21 @@ public class LayoutPipe extends Pipe implements Serializable {
             // format (copied from CermineLineLayoutExtractor)
             // fixedLine += "\t" + bxLine.getX() + "\t" + bxLine.getY() + "\t" +
             // bxLine.getHeight() + "\t" + bxLine.getWidth()
-            double thisXPos = Double.parseDouble(tokenSplit[1]);
-            double thisYPos = Double.parseDouble(tokenSplit[2]);
-            double thisHeight = Double.parseDouble(tokenSplit[3]);
-            double thisWidth = Double.parseDouble(tokenSplit[4]);
-            double thisZoneId = Double.parseDouble(tokenSplit[5]);
+            this.thisXPos = Double.parseDouble(tokenSplit[1]);
+            this.thisYPos = Double.parseDouble(tokenSplit[2]);
+            this.thisHeight = Double.parseDouble(tokenSplit[3]);
+            this.thisWidth = Double.parseDouble(tokenSplit[4]);
+            this.thisZoneId = Double.parseDouble(tokenSplit[5]);
 
-            if (thisZoneId != prevZoneId) {
-                // token.setFeatureValue(this.differentZoneLabel, 1.0);
-                prevWasIndent = false;
+            this.computeFeatureLabel(token);
 
-                // token.setFeatureValue("NEWZONE", 1.0);
-            } else {
-                if (prevWasIndent) {
-                    if (Math.abs(thisXPos - prevXPos) < 0.001) {
-                        token.setFeatureValue(this.indentFeatureLabel, 1.0);
-                        prevWasIndent = true;
-                    } else {
-                        prevWasIndent = false;
-                    }
-                } else {
-                    if (((thisXPos - prevXPos) > 5.0) && (prevYPos < thisYPos)) {
-                        token.setFeatureValue(this.indentFeatureLabel, 1.0);
-                        prevWasIndent = true;
-                    } else {
-                        prevWasIndent = false;
-                    }
-                }
+            // token.setText(tokenSplit[0]);
 
-            }
-
-            // calculate distance to prev line
-            double thisDistance = thisYPos - (prevYPos + prevHeight);
-            if ((thisDistance - prevDistance) > 5) {
-                token.setFeatureValue(this.gapAboveLabel, 1.0);
-            }
-            prevDistance = thisDistance;
-
-            token.setText(tokenSplit[0]);
-
-            prevXPos = thisXPos;
-            prevYPos = thisYPos;
-            prevHeight = thisHeight;
-            prevWidth = thisWidth;
-            prevZoneId = thisZoneId;
+            this.prevXPos = this.thisXPos;
+            this.prevYPos = this.thisYPos;
+            this.prevHeight = this.thisHeight;
+            this.prevWidth = this.thisWidth;
+            this.prevZoneId = this.thisZoneId;
 
         }
         return carrier;
@@ -111,20 +81,18 @@ public class LayoutPipe extends Pipe implements Serializable {
         // read serial version
         in.readInt();
 
-        this.indentFeatureLabel = (String) in.readObject();
-        this.gapAboveLabel = (String) in.readObject();
-        this.differentZoneLabel = (String) in.readObject();
+        this.featureLabel = (String) in.readObject();
         this.csvSeparator = (String) in.readObject();
         // this.yPosFeatureLabel = (String) in.readObject();
     }
 
     private void writeObject(ObjectOutputStream out) throws IOException {
         out.writeInt(CURRENT_SERIAL_VERSION);
-        out.writeObject(this.indentFeatureLabel);
-        out.writeObject(this.gapAboveLabel);
-        out.writeObject(this.differentZoneLabel);
+        out.writeObject(this.featureLabel);
         out.writeObject(this.csvSeparator);
         // out.writeObject(this.yPosFeatureLabel);
     }
+
+    protected abstract void computeFeatureLabel(Token token);
 
 }

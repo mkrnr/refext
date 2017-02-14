@@ -49,6 +49,7 @@ public class XmlRefTagToTargetPipe extends Pipe implements Serializable {
     public Instance pipe(Instance carrier) {
 
         TokenSequence ts = (TokenSequence) carrier.getData();
+        TokenSequence targetTokenSeq = new TokenSequence(ts.size());
 
         boolean inReferenceString = false;
         boolean inOtherInReferenceString = false;
@@ -92,14 +93,20 @@ public class XmlRefTagToTargetPipe extends Pipe implements Serializable {
                 line = line.replaceFirst("</" + this.otherInReferenceTagName + ">", "");
                 inOtherInReferenceString = false;
             }
-            t.setText(targetLabel + " " + line);
+
+            t.setText(line);
+            targetTokenSeq.add(targetLabel);
+
         }
+        carrier.setTarget(targetTokenSeq);
+        carrier.setData(ts);
 
         return carrier;
     }
 
     private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
-        int version = in.readInt();
+        // read version number
+        in.readInt();
 
         this.referenceTagName = (String) in.readObject();
         this.otherInReferenceTagName = (String) in.readObject();

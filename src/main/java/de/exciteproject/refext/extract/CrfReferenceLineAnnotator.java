@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 import cc.mallet.fst.CRF;
-import cc.mallet.fst.CRFTrainerByLabelLikelihood;
 import cc.mallet.pipe.Pipe;
 import cc.mallet.pipe.iterator.LineGroupIterator;
 import cc.mallet.types.Instance;
@@ -19,11 +18,6 @@ import cc.mallet.util.FileUtils;
 import pl.edu.icm.cermine.exception.AnalysisException;
 
 public class CrfReferenceLineAnnotator {
-
-    public static void main(String[] args) {
-        // TODO Auto-generated method stub
-
-    }
 
     private CRF crf;
     private Pipe pipe;
@@ -38,6 +32,7 @@ public class CrfReferenceLineAnnotator {
         StringBuilder lineStringBuilder = new StringBuilder();
         for (String line : linesWithLayout) {
             lineStringBuilder.append(line).append("\n");
+
         }
         BufferedReader lineReader = new BufferedReader(new StringReader(lineStringBuilder.toString()));
 
@@ -45,8 +40,9 @@ public class CrfReferenceLineAnnotator {
         inputInstances.addThruPipe(new LineGroupIterator(lineReader, Pattern.compile("^\\s*$"), true));
         lineReader.close();
 
-        CRFTrainerByLabelLikelihood trainer = new CRFTrainerByLabelLikelihood(this.crf);
-        trainer.setUseSparseWeights(false);
+        // CRFTrainerByLabelLikelihood trainer = new
+        // CRFTrainerByLabelLikelihood(this.crf);
+        // trainer.setUseSparseWeights(false);
 
         List<String> annotatedLines = new ArrayList<String>();
 

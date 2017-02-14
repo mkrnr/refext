@@ -59,6 +59,7 @@ public class FeaturePipeProvider {
     private File firstNameFile;
 
     private File lastNameFile;
+    private String csvSeparator = "\t";
 
     public FeaturePipeProvider(File firstNameFile, File lastNameFile) {
         this.firstNameFile = firstNameFile;
@@ -78,27 +79,23 @@ public class FeaturePipeProvider {
         return this.featurePipes.keySet().toArray(new String[0]);
     }
 
-    private void addCountMatchesPipe(String featureName, String pattern) {
-        // TODO unify pattern creation (see RegexPipe constructor)
-        this.featurePipes.put(featureName, new CountMatchesPipe(featureName, pattern));
-    }
-
-    private void addRegexPipe(String featureName, String pattern) {
-        this.featurePipes.put(featureName, new RegexPipe(featureName, Pattern.compile(pattern)));
-    }
-
     private void createFeaturePipes() {
         this.featurePipes = new HashMap<String, Pipe>();
 
         // add featurePipes that use a RegexPipe
 
         for (Entry<String, String> regexMapEntry : getRegexMap().entrySet()) {
-            this.addRegexPipe(regexMapEntry.getKey(), regexMapEntry.getValue());
+            this.featurePipes.put(regexMapEntry.getKey(), new RegexPipe(regexMapEntry.getKey(),
+                    Pattern.compile(regexMapEntry.getValue()), this.csvSeparator));
         }
 
         for (Entry<String, String> countRegexMapEntry : getCountRegexMap().entrySet()) {
-            this.addCountMatchesPipe(countRegexMapEntry.getKey(), countRegexMapEntry.getValue());
+            this.featurePipes.put(countRegexMapEntry.getKey(), new CountMatchesPipe(countRegexMapEntry.getKey(),
+                    countRegexMapEntry.getValue(), this.csvSeparator));
         }
+
+        this.featurePipes.put("INDENT", new IndentLayoutPipe("INDENT", this.csvSeparator));
+        this.featurePipes.put("GAPABOVE", new GapAboveLayoutPipe("GAPABOVE", this.csvSeparator));
         // matches tokens where all letters are lower cased
 
         // pipes.add(new RegexMatches("CONTAINSURL",

@@ -24,10 +24,12 @@ public class RegexPipe extends Pipe implements Serializable {
 
     private Pattern regex;
     private String feature;
+    private String csvSeparator;
 
-    public RegexPipe(String featureName, Pattern regex) {
+    public RegexPipe(String featureName, Pattern regex, String csvSeparator) {
         this.feature = featureName;
         this.regex = regex;
+        this.csvSeparator = csvSeparator;
     }
 
     @Override
@@ -35,7 +37,7 @@ public class RegexPipe extends Pipe implements Serializable {
         TokenSequence tokenSequence = (TokenSequence) carrier.getData();
         for (int i = 0; i < tokenSequence.size(); i++) {
             Token token = tokenSequence.get(i);
-            String tokenText = token.getText();
+            String tokenText = token.getText().split(this.csvSeparator)[0];
             if (this.regex.matcher(tokenText).matches()) {
                 token.setFeatureValue(this.feature, 1.0);
             }
@@ -49,12 +51,14 @@ public class RegexPipe extends Pipe implements Serializable {
 
         this.regex = (Pattern) in.readObject();
         this.feature = (String) in.readObject();
+        this.csvSeparator = (String) in.readObject();
     }
 
     private void writeObject(ObjectOutputStream out) throws IOException {
         out.writeInt(CURRENT_SERIAL_VERSION);
         out.writeObject(this.regex);
         out.writeObject(this.feature);
+        out.writeObject(this.csvSeparator);
     }
 
 }

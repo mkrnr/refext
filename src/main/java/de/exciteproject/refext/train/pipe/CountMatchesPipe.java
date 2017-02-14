@@ -21,10 +21,12 @@ public class CountMatchesPipe extends Pipe implements Serializable {
 
     private String feature;
     private String wordRegex;
+    private String csvSeparator;
 
-    public CountMatchesPipe(String featureName, String wordRegex) {
+    public CountMatchesPipe(String featureName, String wordRegex, String csvSeparator) {
         this.feature = featureName;
         this.wordRegex = wordRegex;
+        this.csvSeparator = csvSeparator;
     }
 
     @Override
@@ -32,7 +34,7 @@ public class CountMatchesPipe extends Pipe implements Serializable {
         TokenSequence tokenSequence = (TokenSequence) carrier.getData();
         for (int i = 0; i < tokenSequence.size(); i++) {
             Token token = tokenSequence.get(i);
-            String tokenText = token.getText();
+            String tokenText = token.getText().split(this.csvSeparator)[0];
             String[] tokenTextSplit = tokenText.split("\\s");
             int count = 0;
             for (String string : tokenTextSplit) {
@@ -54,12 +56,14 @@ public class CountMatchesPipe extends Pipe implements Serializable {
 
         this.feature = (String) in.readObject();
         this.wordRegex = (String) in.readObject();
+        this.csvSeparator = (String) in.readObject();
     }
 
     private void writeObject(ObjectOutputStream out) throws IOException {
         out.writeInt(CURRENT_SERIAL_VERSION);
         out.writeObject(this.feature);
         out.writeObject(this.wordRegex);
+        out.writeObject(this.csvSeparator);
     }
 
 }

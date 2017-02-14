@@ -36,6 +36,7 @@ public class CermineLineLayoutExtractor extends CermineLineExtractor {
     public static void main(String[] args) throws IOException, AnalysisException {
         File inputDir = new File(args[0]);
         File outputDir = new File(args[1]);
+        long pdfFileSizeLimit = Long.parseLong(args[2]);
 
         if (!outputDir.exists()) {
             outputDir.mkdirs();
@@ -47,6 +48,9 @@ public class CermineLineLayoutExtractor extends CermineLineExtractor {
         Instant start = Instant.now();
         for (File inputFile : inputFiles) {
             System.out.println("processing: " + inputFile);
+            if (inputFile.length() > pdfFileSizeLimit) {
+                continue;
+            }
 
             File currentOutputDirectory;
 

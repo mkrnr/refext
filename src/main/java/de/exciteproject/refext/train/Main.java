@@ -10,6 +10,9 @@ import com.beust.jcommander.Parameter;
 import com.beust.jcommander.ParameterException;
 import com.beust.jcommander.converters.FileConverter;
 
+import cc.mallet.fst.CRF;
+import cc.mallet.types.InstanceList;
+
 /**
  * Class for training a supervised CRF for extracting reference strings from a
  * text by considering layout information as well as content information.
@@ -65,9 +68,21 @@ public class Main {
     // TODO Add configurations (optional with default value)
 
     public void run() throws FileNotFoundException, IOException {
-        ReferenceExtractorTrainer referenceExtractorTrainer = new ReferenceExtractorTrainer(this.trainingFile,
-                this.testingFile, this.modelFile, this.featureNames, this.firstNameFile, this.lastNameFile);
-        referenceExtractorTrainer.train();
+
+        ReferenceExtractorTrainer referenceExtractorTrainer = new ReferenceExtractorTrainer(this.featureNames,
+                this.firstNameFile, this.lastNameFile);
+
+        InstanceList trainingInstances = referenceExtractorTrainer.buildInstanceList(this.trainingFile);
+        InstanceList testingInstances = referenceExtractorTrainer.buildInstanceList(this.testingFile);
+
+        // TODO add parameter
+
+        referenceExtractorTrainer.addStartState();
+        referenceExtractorTrainer.addStatesForThreeQuarterLabelsConnectedAsIn(trainingInstances);
+        referenceExtractorTrainer.setCRFTrainerByLabelLikelihood(10.0);
+
+        CRF crf = referenceExtractorTrainer.train(trainingInstances, testingInstances);
+        crf.write(this.modelFile);
 
     }
 }

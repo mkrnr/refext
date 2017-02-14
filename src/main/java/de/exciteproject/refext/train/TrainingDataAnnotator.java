@@ -31,11 +31,15 @@ public class TrainingDataAnnotator {
         String inputDirectoryPath = FileUtils.getDirctory(inputDir).getAbsolutePath();
 
         for (File inputFile : inputFiles) {
-            List<String> annotatedText = trainingDataAnnotator.annotateText(inputFile);
             String inputFileSubPath = inputFile.getAbsolutePath().replaceAll(inputDirectoryPath, "");
 
             inputFileSubPath = inputFileSubPath.replaceAll(".pdf$", ".txt");
             File outputFile = new File(outputDir + inputFileSubPath);
+            if (outputFile.exists()) {
+                continue;
+            }
+
+            List<String> annotatedText = trainingDataAnnotator.annotateText(inputFile);
             Files.write(Paths.get(outputFile.getAbsolutePath()), annotatedText, Charset.defaultCharset());
         }
     }
@@ -101,14 +105,4 @@ public class TrainingDataAnnotator {
             return lineSplit[1];
         }
     }
-
-    private boolean isNotPartOfReference(String annotatedLine) {
-        String[] lineSplit = annotatedLine.split("\\t");
-        if (lineSplit[0].equals("O") || lineSplit[0].equals("B-REF")) {
-            return false;
-        } else {
-            return true;
-        }
-    }
-
 }
