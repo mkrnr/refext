@@ -42,12 +42,12 @@ public class Main {
     private boolean help;
 
     @Parameter(names = { "-test",
-            "--testing-file" }, description = "file that contains per line: word <space> label", required = true, converter = FileConverter.class)
-    private File testingFile;
+            "--testing-dir" }, description = "directory containing files where each line corresponds to the output ormat of CermineLineLayoutExtractor including XML tags ", required = true, converter = FileConverter.class)
+    private File testingDirectory;
 
     @Parameter(names = { "-train",
-            "--training-file" }, description = "file that contains per line: word <space> label", required = true, converter = FileConverter.class)
-    private File trainingFile;
+            "--training-dir" }, description = "directory containing files where each line corresponds to the output ormat of CermineLineLayoutExtractor including XML tags ", required = true, converter = FileConverter.class)
+    private File trainingDirectory;
 
     @Parameter(names = { "-model",
             "--model-output-file" }, description = "file in which the trained crf model is saved", required = true, converter = FileConverter.class)
@@ -72,8 +72,8 @@ public class Main {
         ReferenceExtractorTrainer referenceExtractorTrainer = new ReferenceExtractorTrainer(this.featureNames,
                 this.firstNameFile, this.lastNameFile);
 
-        InstanceList trainingInstances = referenceExtractorTrainer.buildInstanceList(this.trainingFile);
-        InstanceList testingInstances = referenceExtractorTrainer.buildInstanceList(this.testingFile);
+        InstanceList trainingInstances = referenceExtractorTrainer.buildInstanceListFromDir(this.trainingDirectory);
+        InstanceList testingInstances = referenceExtractorTrainer.buildInstanceListFromDir(this.testingDirectory);
 
         // TODO add parameter
 

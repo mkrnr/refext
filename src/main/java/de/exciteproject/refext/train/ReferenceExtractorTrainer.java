@@ -97,6 +97,18 @@ public class ReferenceExtractorTrainer {
         return instanceList;
     }
 
+    public InstanceList buildInstanceListFromDir(File inputDirectory) throws FileNotFoundException {
+        InstanceList instanceList = new InstanceList(this.serialPipes);
+
+        for (File inputFile : inputDirectory.listFiles()) {
+            instanceList.addThruPipe(
+                    new LineGroupIterator(new BufferedReader(new InputStreamReader(new FileInputStream(inputFile))),
+                            Pattern.compile("^\\s*$"), true));
+        }
+
+        return instanceList;
+    }
+
     public void setCRFTrainerByL1LabelLikelihood(double l1Weight) {
         CRFTrainerByL1LabelLikelihood crfTrainerByL1LabelLikelihood = new CRFTrainerByL1LabelLikelihood(this.crf,
                 l1Weight);
