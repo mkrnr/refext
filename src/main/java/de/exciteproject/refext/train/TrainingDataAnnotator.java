@@ -33,7 +33,7 @@ public class TrainingDataAnnotator {
         for (File inputFile : inputFiles) {
             String inputFileSubPath = inputFile.getAbsolutePath().replaceAll(inputDirectoryPath, "");
 
-            inputFileSubPath = inputFileSubPath.replaceAll(".pdf$", ".txt");
+            inputFileSubPath = inputFileSubPath.replaceAll(".pdf$", ".xml");
             File outputFile = new File(outputDir + inputFileSubPath);
             if (outputFile.exists()) {
                 continue;
