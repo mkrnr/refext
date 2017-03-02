@@ -16,7 +16,7 @@ import cc.mallet.types.TokenSequence;
  * A class that counts the number of matches of given regular expression per
  * token in a tokenSequence.
  */
-public class CountMatchesPipe extends Pipe implements Serializable {
+public class ShorterLinePipe extends Pipe implements Serializable {
 
     private static final long serialVersionUID = 1L;
     private static final int CURRENT_SERIAL_VERSION = 0;
@@ -25,15 +25,16 @@ public class CountMatchesPipe extends Pipe implements Serializable {
     private Pattern pattern;
     private String csvSeparator;
 
-    public CountMatchesPipe(String featureName, String regex, String csvSeparator) {
+    public ShorterLinePipe(String featureName, String csvSeparator) {
         this.feature = featureName;
-        this.pattern = Pattern.compile(regex);
+        this.pattern = Pattern.compile(".");
         this.csvSeparator = csvSeparator;
     }
 
     @Override
     public Instance pipe(Instance carrier) {
         TokenSequence tokenSequence = (TokenSequence) carrier.getData();
+        int prevCount = 0;
         for (int i = 0; i < tokenSequence.size(); i++) {
             Token token = tokenSequence.get(i);
             String tokenText = token.getText().split(this.csvSeparator)[0];
@@ -43,10 +44,10 @@ public class CountMatchesPipe extends Pipe implements Serializable {
                 count++;
             }
             // int count = StringUtils.countMatches(tokenText, this.subString);
-            if (count > 0) {
-                // token.setFeatureValue(this.feature + "=" + count, 1.0);
-                token.setFeatureValue(this.feature, count);
+            if (count < prevCount) {
+                token.setFeatureValue(this.feature, 1.0);
             }
+            prevCount = count;
         }
         return carrier;
     }

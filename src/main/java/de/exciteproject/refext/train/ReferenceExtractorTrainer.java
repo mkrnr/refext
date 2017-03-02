@@ -12,6 +12,8 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.ArrayUtils;
 
+import com.cybozu.labs.langdetect.LangDetectException;
+
 import cc.mallet.fst.CRF;
 import cc.mallet.fst.CRFTrainerByL1LabelLikelihood;
 import cc.mallet.fst.CRFTrainerByLabelLikelihood;
@@ -25,9 +27,13 @@ import cc.mallet.pipe.SerialPipes;
 import cc.mallet.pipe.Target2LabelSequence;
 import cc.mallet.pipe.TokenSequence2FeatureVectorSequence;
 import cc.mallet.pipe.iterator.LineGroupIterator;
+import cc.mallet.pipe.tsf.OffsetConjunctions;
+import cc.mallet.pipe.tsf.TokenTextCharPrefix;
+import cc.mallet.pipe.tsf.TokenTextCharSuffix;
 import cc.mallet.types.InstanceList;
 import de.exciteproject.refext.train.pipe.FeaturePipeProvider;
 import de.exciteproject.refext.train.pipe.XmlRefTagToTargetPipe;
+import de.exciteproject.refext.util.FixedViterbiWriter;
 
 /**
  * Class for training a supervised CRF for extracting reference strings from a
@@ -41,7 +47,8 @@ public class ReferenceExtractorTrainer {
 
     private SerialPipes serialPipes;
 
-    public ReferenceExtractorTrainer(List<String> featureNames, File firstNameFile, File lastNameFile) {
+    public ReferenceExtractorTrainer(List<String> featureNames, File firstNameFile, File lastNameFile)
+            throws LangDetectException, IOException {
         this.serialPipes = this.buildSerialPipes(featureNames, firstNameFile, lastNameFile);
 
         this.crf = new CRF(this.serialPipes, null);
@@ -131,18 +138,21 @@ public class ReferenceExtractorTrainer {
         // "training"));
         this.transducerTrainer.addEvaluator(new PerClassAccuracyEvaluator(testingInstances, "testing"));
         this.transducerTrainer.addEvaluator(new TokenAccuracyEvaluator(testingInstances, "testing"));
+        // TODO remove
+        this.transducerTrainer
+                .addEvaluator(new FixedViterbiWriter(new File("/home/mkoerner/viterbi.txt"), testingInstances, "test"));
+
         this.transducerTrainer.train(trainingInstances);
         return this.crf;
     }
 
     // TODO Add configurations (optional with default value)
-    private SerialPipes buildSerialPipes(List<String> featureNames, File firstNameFile, File lastNameFile) {
+    private SerialPipes buildSerialPipes(List<String> featureNames, File firstNameFile, File lastNameFile)
+            throws LangDetectException, IOException {
         ArrayList<Pipe> pipes = new ArrayList<Pipe>();
         pipes.add(new LineGroupString2TokenSequence());
 
         pipes.add(new XmlRefTagToTargetPipe("ref", "oth", "REF", "REFO", "O"));
-
-        // TODO add feature config for LayoutPipe
 
         FeaturePipeProvider featurePipeProvider = new FeaturePipeProvider(firstNameFile, lastNameFile);
         for (String featureName : featureNames) {
@@ -155,14 +165,15 @@ public class ReferenceExtractorTrainer {
         // pipes.add(new TokenTextCharSuffix("C2=", 2));
         // pipes.add(new TokenTextCharSuffix("C3=", 3));
 
-        // pipes.add(new TokenTextCharSuffix("SUFFIX=", 1));
-        // pipes.add(new TokenTextCharPrefix("PREFIX=", 1));
+        pipes.add(new TokenTextCharSuffix("SUFFIX=", 1));
+        pipes.add(new TokenTextCharPrefix("PREFIX=", 1));
 
-        // int[][] conjunctions = new int[3][];
-        // conjunctions[0] = new int[] { -2 };
-        // conjunctions[1] = new int[] { -1 };
-        // conjunctions[2] = new int[] { 1 };
-        // pipes.add(new OffsetConjunctions(conjunctions));
+        int[][] conjunctions = new int[4][];
+        conjunctions[0] = new int[] { -2 };
+        conjunctions[1] = new int[] { -1 };
+        conjunctions[2] = new int[] { 1 };
+        conjunctions[3] = new int[] { 2 };
+        pipes.add(new OffsetConjunctions(conjunctions));
 
         pipes.add(new TokenSequence2FeatureVectorSequence(false, false));
         pipes.add(new Target2LabelSequence());

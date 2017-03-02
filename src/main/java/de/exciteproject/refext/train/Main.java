@@ -9,6 +9,7 @@ import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.ParameterException;
 import com.beust.jcommander.converters.FileConverter;
+import com.cybozu.labs.langdetect.LangDetectException;
 
 import cc.mallet.fst.CRF;
 import cc.mallet.types.InstanceList;
@@ -19,7 +20,7 @@ import cc.mallet.types.InstanceList;
  */
 public class Main {
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, LangDetectException {
         Main supervisedCrfTrainer = new Main();
 
         JCommander jCommander;
@@ -67,7 +68,7 @@ public class Main {
 
     // TODO Add configurations (optional with default value)
 
-    public void run() throws FileNotFoundException, IOException {
+    public void run() throws FileNotFoundException, IOException, LangDetectException {
 
         ReferenceExtractorTrainer referenceExtractorTrainer = new ReferenceExtractorTrainer(this.featureNames,
                 this.firstNameFile, this.lastNameFile);
@@ -80,6 +81,7 @@ public class Main {
         referenceExtractorTrainer.addStartState();
         referenceExtractorTrainer.addStatesForThreeQuarterLabelsConnectedAsIn(trainingInstances);
         referenceExtractorTrainer.setCRFTrainerByLabelLikelihood(10.0);
+        // referenceExtractorTrainer.setCRFTrainerByL1LabelLikelihood(0.75);
 
         CRF crf = referenceExtractorTrainer.train(trainingInstances, testingInstances);
         crf.write(this.modelFile);

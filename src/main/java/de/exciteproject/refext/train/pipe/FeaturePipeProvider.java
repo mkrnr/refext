@@ -1,11 +1,15 @@
 package de.exciteproject.refext.train.pipe;
 
 import java.io.File;
+import java.io.IOException;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.regex.Pattern;
+
+import com.cybozu.labs.langdetect.LangDetectException;
 
 import cc.mallet.pipe.Pipe;
 
@@ -20,16 +24,25 @@ public class FeaturePipeProvider {
         Map<String, String> tempRegexMap = new HashMap<String, String>();
         tempRegexMap.put("STARTSCAPITALIZED", "\\p{javaUpperCase}.*");
         tempRegexMap.put("STARTSNUMBER", "[0-9].*");
-        tempRegexMap.put("CONTAINSYEAR", ".*\\D[0-9][0-9][0-9][0-9]\\D.*");
-        tempRegexMap.put("CONTAINSPAGERANGE", ".*\\d(-|^|\")\\d.*");
-        tempRegexMap.put("CONTAINSAMPHERSAND", ".*&.*");
-        tempRegexMap.put("CONTAINSQUOTE", ".*[„“””‘’\"'].*");
+
+        int year = Calendar.getInstance().get(Calendar.YEAR);
+        int decadeNumber = (year / 10) % 10;
+        int yearNumber = year % 10;
+        String yearRegex = "(1[6-9][0-9][0-9]|20[0-" + decadeNumber + "][0-" + yearNumber + "])";
+
+        tempRegexMap.put("YEAR", ".*\\D*" + yearRegex + "\\D*.*");
+        tempRegexMap.put("YEARINBRACES", ".*\\(" + yearRegex + "\\).*");
+
+        tempRegexMap.put("PAGERANGE", ".*\\d(-|\\^|\")\\d.*");
+        tempRegexMap.put("AMPHERSAND", ".*&.*");
+        tempRegexMap.put("QUOTE", ".*[„“””‘’\"'].*");
         tempRegexMap.put("COLON", ".*:.*");
         tempRegexMap.put("SLASH", ".*/.*");
         tempRegexMap.put("BRACES", ".*\\(.*\\).*");
         tempRegexMap.put("ENDSPERIOD", ".*\\.");
         tempRegexMap.put("ENDSCOMMA", ".*,");
-        tempRegexMap.put("ISNUMBER", "/d+");
+        tempRegexMap.put("ISNUMBER", "\\d+");
+        tempRegexMap.put("IN", "(?i)\\W*in\\W*");
 
         regexMap = Collections.unmodifiableMap(tempRegexMap);
     }
@@ -38,11 +51,14 @@ public class FeaturePipeProvider {
     static {
         Map<String, String> tempCountRegexMap = new HashMap<String, String>();
 
-        tempCountRegexMap.put("PERIODS", ".*\\..*");
-        tempCountRegexMap.put("COMMAS", ".*,.*");
-        tempCountRegexMap.put("CAPITALIZEDS", "\\p{Lu}.*");
-        tempCountRegexMap.put("LOWERCASEDS", "\\p{javaLowerCase}.*");
-        tempCountRegexMap.put("WORDS", ".+");
+        tempCountRegexMap.put("PERIODS", "\\.");
+        tempCountRegexMap.put("COMMAS", ",");
+        tempCountRegexMap.put("CAPITALIZEDS", "\\p{Lu}");
+        tempCountRegexMap.put("LOWERCASEDS", "\\p{javaLowerCase}");
+        tempCountRegexMap.put("WORDS", "\\s*\\S+\\s*");
+        tempCountRegexMap.put("NUMBERS", "\\D*\\d+\\D*");
+        tempCountRegexMap.put("CHARACTERS", ".");
+        tempCountRegexMap.put("ONEUPPERCASEDS", "(^|\\P{L})\\p{Lu}(\\P{L}|$)");
 
         countRegexMap = Collections.unmodifiableMap(tempCountRegexMap);
     }
@@ -61,7 +77,7 @@ public class FeaturePipeProvider {
     private File lastNameFile;
     private String csvSeparator = "\t";
 
-    public FeaturePipeProvider(File firstNameFile, File lastNameFile) {
+    public FeaturePipeProvider(File firstNameFile, File lastNameFile) throws LangDetectException, IOException {
         this.firstNameFile = firstNameFile;
         this.lastNameFile = lastNameFile;
 
@@ -79,7 +95,7 @@ public class FeaturePipeProvider {
         return this.featurePipes.keySet().toArray(new String[0]);
     }
 
-    private void createFeaturePipes() {
+    private void createFeaturePipes() throws LangDetectException, IOException {
         this.featurePipes = new HashMap<String, Pipe>();
 
         // add featurePipes that use a RegexPipe
@@ -96,6 +112,10 @@ public class FeaturePipeProvider {
 
         this.featurePipes.put("INDENT", new IndentLayoutPipe("INDENT", this.csvSeparator));
         this.featurePipes.put("GAPABOVE", new GapAboveLayoutPipe("GAPABOVE", this.csvSeparator));
+        this.featurePipes.put("SHORTERLINE", new ShorterLinePipe("SHORTERLINE", this.csvSeparator));
+        this.featurePipes.put("LANGUAGE", new LanguagePipe("LANGUAGE", this.csvSeparator));
+        this.featurePipes.put("REFSEC", new ReferenceSectionPipe("REFSEC", this.csvSeparator));
+        this.featurePipes.put("POSINDOC", new PositionInDocumentPipe("POSINDOC", this.csvSeparator));
         // matches tokens where all letters are lower cased
 
         // pipes.add(new RegexMatches("CONTAINSURL",
