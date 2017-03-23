@@ -62,9 +62,9 @@ public class CermineLineLayoutExtractor extends CermineLineExtractor {
             File outputFile = new File(currentOutputDirectory.getAbsolutePath() + File.separator + outputFileName);
 
             // skip computation if outputFile already exists
-            // if (outputFile.exists()) {
-            // continue;
-            // }
+            if (outputFile.exists()) {
+                continue;
+            }
 
             if (!currentOutputDirectory.exists()) {
                 currentOutputDirectory.mkdirs();

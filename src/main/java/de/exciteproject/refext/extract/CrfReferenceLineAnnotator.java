@@ -51,7 +51,9 @@ public class CrfReferenceLineAnnotator {
             Sequence<String> output = this.crf.transduce((Sequence<String>) instance.getData());
             for (int i = 0; i < output.size(); i++) {
 
-                annotatedLines.add(output.get(i).toString() + "\t" + linesWithLayout.get(i).split("\t")[0]);
+                // annotatedLines.add(output.get(i).toString() + "\t" +
+                // linesWithLayout.get(i).split("\t")[0]);
+                annotatedLines.add(output.get(i).toString() + "\t" + linesWithLayout.get(i).split("\t")[1]);
             }
         }
         return annotatedLines;

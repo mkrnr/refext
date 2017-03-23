@@ -32,8 +32,7 @@ import cc.mallet.pipe.tsf.TokenTextCharPrefix;
 import cc.mallet.pipe.tsf.TokenTextCharSuffix;
 import cc.mallet.types.InstanceList;
 import de.exciteproject.refext.train.pipe.FeaturePipeProvider;
-import de.exciteproject.refext.train.pipe.XmlRefTagToTargetPipe;
-import de.exciteproject.refext.util.FixedViterbiWriter;
+import de.exciteproject.refext.train.pipe.LineToTargetTextPipe;
 
 /**
  * Class for training a supervised CRF for extracting reference strings from a
@@ -95,7 +94,8 @@ public class ReferenceExtractorTrainer {
     }
 
     public InstanceList buildInstanceList(File inputFile) throws FileNotFoundException {
-        InstanceList instanceList = new InstanceList(this.serialPipes);
+        InstanceList instanceList;
+        instanceList = new InstanceList(this.serialPipes);
 
         instanceList.addThruPipe(
                 new LineGroupIterator(new BufferedReader(new InputStreamReader(new FileInputStream(inputFile))),
@@ -105,7 +105,8 @@ public class ReferenceExtractorTrainer {
     }
 
     public InstanceList buildInstanceListFromDir(File inputDirectory) throws FileNotFoundException {
-        InstanceList instanceList = new InstanceList(this.serialPipes);
+        InstanceList instanceList;
+        instanceList = new InstanceList(this.serialPipes);
 
         for (File inputFile : inputDirectory.listFiles()) {
             instanceList.addThruPipe(
@@ -139,8 +140,9 @@ public class ReferenceExtractorTrainer {
         this.transducerTrainer.addEvaluator(new PerClassAccuracyEvaluator(testingInstances, "testing"));
         this.transducerTrainer.addEvaluator(new TokenAccuracyEvaluator(testingInstances, "testing"));
         // TODO remove
-        this.transducerTrainer
-                .addEvaluator(new FixedViterbiWriter(new File("/home/mkoerner/viterbi.txt"), testingInstances, "test"));
+        // this.transducerTrainer
+        // .addEvaluator(new FixedViterbiWriter(new
+        // File("/home/mkoerner/viterbi.txt"), testingInstances, "test"));
 
         this.transducerTrainer.train(trainingInstances);
         return this.crf;
@@ -151,8 +153,10 @@ public class ReferenceExtractorTrainer {
             throws LangDetectException, IOException {
         ArrayList<Pipe> pipes = new ArrayList<Pipe>();
         pipes.add(new LineGroupString2TokenSequence());
+        pipes.add(new LineToTargetTextPipe());
 
-        pipes.add(new XmlRefTagToTargetPipe("ref", "oth", "REF", "REFO", "O"));
+        // pipes.add(new XmlRefTagToTargetPipe("ref", "oth", "REF", "REFO",
+        // "O"));
 
         FeaturePipeProvider featurePipeProvider = new FeaturePipeProvider(firstNameFile, lastNameFile);
         for (String featureName : featureNames) {

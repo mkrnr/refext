@@ -25,7 +25,12 @@ public class XmlReferenceExtractor {
         }
         XmlReferenceExtractor xmlReferenceExtractor = new XmlReferenceExtractor();
         for (File inputFile : inputDir.listFiles()) {
-            File outputFile = new File(outputDir.getAbsolutePath() + File.separator + inputFile.getName());
+            File outputFile = new File(
+                    outputDir.getAbsolutePath() + File.separator + inputFile.getName().replaceAll("\\.xml", ".txt"));
+
+            if (outputFile.exists()) {
+                continue;
+            }
             try {
                 List<String> references = xmlReferenceExtractor.extract(inputFile);
                 BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(outputFile));
@@ -54,16 +59,17 @@ public class XmlReferenceExtractor {
 
             String referenceString = matcher.group(1);
 
+            referenceString = referenceString.replaceAll("\u00AD", "-");
             // remove <oth> tags
             referenceString = referenceString.replaceAll("<oth>((\\R||.)*)</oth>", "");
             // remove empty lines
             referenceString = referenceString.replaceAll("\\R\\s*\\R", System.lineSeparator());
 
             // remove dashes at the end of a line when merging
-            referenceString = referenceString.replaceAll("-\\R", "");
+            referenceString = referenceString.replaceAll("[?–-]+\\R", "");
 
             // merge all remaining lines by adding a space
-            referenceString = referenceString.replaceAll("\\R", " ");
+            referenceString = referenceString.replaceAll("\\s*\\R\\s*", " ");
 
             references.add(referenceString);
         }

@@ -80,7 +80,8 @@ public class Main {
 
         referenceExtractorTrainer.addStartState();
         referenceExtractorTrainer.addStatesForThreeQuarterLabelsConnectedAsIn(trainingInstances);
-        referenceExtractorTrainer.setCRFTrainerByLabelLikelihood(10.0);
+        // referenceExtractorTrainer.setCRFTrainerByLabelLikelihood(10.0);
+        referenceExtractorTrainer.setCRFTrainerByL1LabelLikelihood(20.0);
         // referenceExtractorTrainer.setCRFTrainerByL1LabelLikelihood(0.75);
 
         CRF crf = referenceExtractorTrainer.train(trainingInstances, testingInstances);

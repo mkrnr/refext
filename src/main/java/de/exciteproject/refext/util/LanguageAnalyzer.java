@@ -45,7 +45,9 @@ public class LanguageAnalyzer {
                 }
             }
         }
-        DetectorFactory.loadProfile(profiles);
+        if (DetectorFactory.getLangList().isEmpty()) {
+            DetectorFactory.loadProfile(profiles);
+        }
     }
 
     /**
