@@ -49,6 +49,7 @@ public class CermineLineLayoutExtractor extends CermineLineExtractor {
         for (File inputFile : inputFiles) {
             System.out.println("processing: " + inputFile);
             if (inputFile.length() > pdfFileSizeLimit) {
+                System.out.println("skipping with size: " + inputFile.length());
                 continue;
             }
 
