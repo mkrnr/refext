@@ -72,8 +72,10 @@ public class CermineLineLayoutExtractor extends CermineLineExtractor {
             List<String> lines = cermineLineLayoutExtractor.extract(inputFile);
             BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(outputFile));
             for (String line : lines) {
-                bufferedWriter.write(line);
-                bufferedWriter.newLine();
+                if (line.split("\\t").length == 6) {
+                    bufferedWriter.write(line);
+                    bufferedWriter.newLine();
+                }
             }
             bufferedWriter.close();
         }
