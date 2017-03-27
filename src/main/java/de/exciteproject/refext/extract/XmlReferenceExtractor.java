@@ -40,7 +40,8 @@ public class XmlReferenceExtractor {
                 }
                 bufferedWriter.close();
             } catch (StackOverflowError e) {
-                System.err.println("stackoverglow at file: " + inputFile.getAbsolutePath());
+                // TODO: throw exception
+                System.err.println("stackoverflow at file: " + inputFile.getAbsolutePath());
             }
         }
 
