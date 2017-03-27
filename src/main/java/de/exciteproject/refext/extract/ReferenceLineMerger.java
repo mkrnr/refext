@@ -28,7 +28,9 @@ public class ReferenceLineMerger {
                 if (!currentReference.endsWith(" ")) {
                     currentReference += " ";
                 }
-                currentReference += lineSplit[1];
+                if (lineSplit.length > 1) {
+                    currentReference += lineSplit[1];
+                }
             }
         }
         if (currentReference != null) {

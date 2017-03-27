@@ -13,8 +13,7 @@ import de.exciteproject.refext.util.FileUtils;
 import pl.edu.icm.cermine.exception.AnalysisException;
 
 /**
- * Removes a certain number of lines with a specific label based on a predefined
- * ratio
+ * Class for merging files into one CSV with the format: file-id TAB line
  */
 public class FileToCsvDumpMerger {
 
