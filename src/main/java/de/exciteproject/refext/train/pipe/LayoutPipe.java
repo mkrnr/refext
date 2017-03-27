@@ -50,6 +50,7 @@ public abstract class LayoutPipe extends Pipe implements Serializable {
             String[] tokenSplit = tokenText.split(this.csvSeparator);
 
             if (tokenSplit.length != 6) {
+                // TODO throw exception
                 System.err.println("length!=6: " + tokenText);
                 continue;
             }
