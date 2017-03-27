@@ -53,7 +53,10 @@ public class CrfReferenceLineAnnotator {
 
                 // annotatedLines.add(output.get(i).toString() + "\t" +
                 // linesWithLayout.get(i).split("\t")[0]);
-                annotatedLines.add(output.get(i).toString() + "\t" + linesWithLayout.get(i).split("\t")[1]);
+                String[] layoutLineSplit = linesWithLayout.get(i).split("\t");
+                if (layoutLineSplit.length > 0) {
+                    annotatedLines.add(output.get(i).toString() + "\t" + layoutLineSplit[1]);
+                }
             }
         }
         return annotatedLines;
