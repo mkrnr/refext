@@ -32,14 +32,21 @@ public class FileToCsvDumpMerger {
         }
     }
 
+    private int count;
+
+    public FileToCsvDumpMerger() {
+        this.count = 0;
+    }
+
     public void appendToCsv(File inputFile, File outputFile) throws IOException, AnalysisException {
         String fileId = FilenameUtils.getBaseName(inputFile.getName());
 
         BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(outputFile, true));
         Scanner inputScanner = new Scanner(inputFile);
         while (inputScanner.hasNextLine()) {
-            bufferedWriter.write(fileId + "\t" + inputScanner.nextLine());
+            bufferedWriter.write(this.count + "\t" + fileId + "\t" + inputScanner.nextLine());
             bufferedWriter.newLine();
+            this.count++;
         }
         inputScanner.close();
         bufferedWriter.close();
