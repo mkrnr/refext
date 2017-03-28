@@ -44,7 +44,11 @@ public class FileToCsvDumpMerger {
         BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(outputFile, true));
         Scanner inputScanner = new Scanner(inputFile);
         while (inputScanner.hasNextLine()) {
-            bufferedWriter.write(this.count + "\t" + fileId + "\t" + inputScanner.nextLine());
+            String line = inputScanner.nextLine();
+            // TODO cleaner way to do the replacement somewhere else?
+            // replace all backslashes
+            line = line.replace("\\", "/");
+            bufferedWriter.write(this.count + "\t" + fileId + "\t" + line);
             bufferedWriter.newLine();
             this.count++;
         }
