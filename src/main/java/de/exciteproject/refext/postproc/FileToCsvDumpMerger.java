@@ -48,6 +48,7 @@ public class FileToCsvDumpMerger {
             // TODO cleaner way to do the replacement somewhere else?
             // replace all backslashes
             line = line.replace("\\", "/");
+            line = line.replace("\u00AD", "-");
             bufferedWriter.write(this.count + "\t" + fileId + "\t" + line);
             bufferedWriter.newLine();
             this.count++;
