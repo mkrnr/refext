@@ -9,6 +9,7 @@ import java.util.List;
 import de.exciteproject.refext.extract.CermineLineLayoutExtractor;
 import de.exciteproject.refext.extract.CrfReferenceLineAnnotator;
 import de.exciteproject.refext.extract.ReferenceLineMerger;
+import pl.edu.icm.cermine.ComponentConfiguration;
 import pl.edu.icm.cermine.bibref.BibReferenceParser;
 import pl.edu.icm.cermine.bibref.CRFBibReferenceParser;
 import pl.edu.icm.cermine.bibref.model.BibEntry;
@@ -28,7 +29,9 @@ public class ReferenceExtractor {
 
     public ReferenceExtractor(File crfModelFile) throws AnalysisException {
         this.crfReferenceLineAnnotator = new CrfReferenceLineAnnotator(crfModelFile);
-        this.cermineLineLayoutExtractor = new CermineLineLayoutExtractor();
+        ComponentConfiguration componentConfiguration = new ComponentConfiguration();
+
+        this.cermineLineLayoutExtractor = new CermineLineLayoutExtractor(componentConfiguration);
         this.bibReferenceParser = CRFBibReferenceParser.getInstance();
     }
 
