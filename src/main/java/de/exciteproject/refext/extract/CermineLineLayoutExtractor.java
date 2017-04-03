@@ -13,7 +13,10 @@ import org.apache.commons.io.FilenameUtils;
 import de.exciteproject.refext.util.CsvUtils;
 import de.exciteproject.refext.util.FileUtils;
 import de.exciteproject.refext.util.TextUtils;
+import pl.edu.icm.cermine.ComponentConfiguration;
 import pl.edu.icm.cermine.exception.AnalysisException;
+import pl.edu.icm.cermine.structure.DocstrumSegmenter;
+import pl.edu.icm.cermine.structure.HierarchicalReadingOrderResolver;
 import pl.edu.icm.cermine.structure.model.BxLine;
 
 /**
@@ -42,8 +45,10 @@ public class CermineLineLayoutExtractor extends CermineLineExtractor {
             outputDir.mkdirs();
         }
 
+        ComponentConfiguration componentConfiguration = new ComponentConfiguration();
+        CermineLineLayoutExtractor cermineLineLayoutExtractor = new CermineLineLayoutExtractor(componentConfiguration);
+
         List<File> inputFiles = FileUtils.listFilesRecursively(inputDir);
-        CermineLineLayoutExtractor cermineLineLayoutExtractor = new CermineLineLayoutExtractor();
 
         Instant start = Instant.now();
         for (File inputFile : inputFiles) {
@@ -79,14 +84,26 @@ public class CermineLineLayoutExtractor extends CermineLineExtractor {
                 }
             }
             bufferedWriter.close();
+
+            Runtime runtime = Runtime.getRuntime();
+            runtime.gc();
+
+            long usedMemory = runtime.totalMemory() - runtime.freeMemory();
+            double usedMegabytes = usedMemory / (1024L * 1024L);
+            System.out.println("Used memory is megabytes: " + usedMegabytes);
+
+            // reset DocumentSegmenter and ReadingOderResolver to fix memory
+            // leak
+            componentConfiguration.setDocumentSegmenter(new DocstrumSegmenter());
+            componentConfiguration.setReadingOrderResolver(new HierarchicalReadingOrderResolver());
         }
 
         Instant end = Instant.now();
         System.out.println("Done. Execution time: " + Duration.between(start, end));
     }
 
-    public CermineLineLayoutExtractor() throws AnalysisException {
-        super();
+    public CermineLineLayoutExtractor(ComponentConfiguration componentConfiguration) throws AnalysisException {
+        super(componentConfiguration);
     }
 
     /**

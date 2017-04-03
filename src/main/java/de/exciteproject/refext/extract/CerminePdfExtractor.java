@@ -19,8 +19,8 @@ public class CerminePdfExtractor {
 
     private ComponentConfiguration componentConfig;
 
-    public CerminePdfExtractor() throws AnalysisException {
-        this.componentConfig = new ComponentConfiguration();
+    public CerminePdfExtractor(ComponentConfiguration componentConfiguration) throws AnalysisException {
+        this.componentConfig = componentConfiguration;
     }
 
     /**

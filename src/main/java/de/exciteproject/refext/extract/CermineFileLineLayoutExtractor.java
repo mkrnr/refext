@@ -12,6 +12,7 @@ import org.apache.commons.io.FilenameUtils;
 
 import de.exciteproject.refext.util.CsvUtils;
 import de.exciteproject.refext.util.TextUtils;
+import pl.edu.icm.cermine.ComponentConfiguration;
 import pl.edu.icm.cermine.exception.AnalysisException;
 import pl.edu.icm.cermine.structure.model.BxLine;
 
@@ -40,8 +41,9 @@ public class CermineFileLineLayoutExtractor extends CermineLineExtractor {
         if (!outputDir.exists()) {
             outputDir.mkdirs();
         }
-
-        CermineFileLineLayoutExtractor cermineLineLayoutExtractor = new CermineFileLineLayoutExtractor();
+        ComponentConfiguration componentConfiguration = new ComponentConfiguration();
+        CermineFileLineLayoutExtractor cermineLineLayoutExtractor = new CermineFileLineLayoutExtractor(
+                componentConfiguration);
 
         Instant start = Instant.now();
         System.out.println("processing: " + inputFile);
@@ -72,8 +74,8 @@ public class CermineFileLineLayoutExtractor extends CermineLineExtractor {
         System.out.println("Done. Execution time: " + Duration.between(start, end));
     }
 
-    public CermineFileLineLayoutExtractor() throws AnalysisException {
-        super();
+    public CermineFileLineLayoutExtractor(ComponentConfiguration componentConfiguration) throws AnalysisException {
+        super(componentConfiguration);
     }
 
     /**

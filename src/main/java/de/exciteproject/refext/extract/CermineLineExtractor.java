@@ -14,6 +14,7 @@ import org.apache.commons.io.FilenameUtils;
 import de.exciteproject.refext.util.CsvUtils;
 import de.exciteproject.refext.util.FileUtils;
 import de.exciteproject.refext.util.TextUtils;
+import pl.edu.icm.cermine.ComponentConfiguration;
 import pl.edu.icm.cermine.exception.AnalysisException;
 import pl.edu.icm.cermine.structure.model.BxDocument;
 import pl.edu.icm.cermine.structure.model.BxLine;
@@ -49,7 +50,9 @@ public class CermineLineExtractor {
         }
 
         List<File> inputFiles = FileUtils.listFilesRecursively(inputDir);
-        CermineLineExtractor cermineLineExtractor = new CermineLineExtractor();
+
+        ComponentConfiguration componentConfig = new ComponentConfiguration();
+        CermineLineExtractor cermineLineExtractor = new CermineLineExtractor(componentConfig);
 
         Instant start = Instant.now();
         for (File inputFile : inputFiles) {
@@ -91,8 +94,8 @@ public class CermineLineExtractor {
 
     private CerminePdfExtractor cerminePdfExtractor;
 
-    public CermineLineExtractor() throws AnalysisException {
-        this.cerminePdfExtractor = new CerminePdfExtractor();
+    public CermineLineExtractor(ComponentConfiguration componentConfiguration) throws AnalysisException {
+        this.cerminePdfExtractor = new CerminePdfExtractor(componentConfiguration);
     }
 
     /**
