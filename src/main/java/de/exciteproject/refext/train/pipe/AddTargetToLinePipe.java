@@ -21,31 +21,41 @@ import cc.mallet.types.TokenSequence;
  * Set the text until the first tab charater as the token text
  */
 
-public class LineToTargetTextPipe extends Pipe implements Serializable {
+public class AddTargetToLinePipe extends Pipe implements Serializable {
 
     private static final long serialVersionUID = 1;
     private static final int CURRENT_SERIAL_VERSION = 0;
+    private int minLineLength;
 
-    // Serialization
+    /**
+     *
+     * @param minLineLength
+     *            minimum line length for layout file. That is, without a
+     *            leading target variable declaration. If a target variable
+     *            declaration is present, the line length is assumed to be
+     *            minLineLength + 1
+     */
+    public AddTargetToLinePipe(int minLineLength) {
+        this.minLineLength = minLineLength;
+    }
 
     @Override
     public Instance pipe(Instance carrier) {
 
         TokenSequence ts = (TokenSequence) carrier.getData();
-        TokenSequence targetTokenSeq = new TokenSequence(ts.size());
-
         for (int i = 0; i < ts.size(); i++) {
 
             Token t = ts.get(i);
-            // System.out.println(t.getText());
-            String lineWithoutFirst = t.getText().replaceFirst("[^\\t]*\t", "");
-            // System.out.println(lineWithoutFirst);
-            // targetTokenSeq.add(lineSplit[0]);
-            targetTokenSeq.add(t.getText().split("\t")[0]);
-            t.setText(lineWithoutFirst);
-
+            int splitLength = t.getText().split("\t").length;
+            if (splitLength == this.minLineLength) {
+                t.setText("O\t" + t.getText());
+            } else {
+                if (splitLength != (this.minLineLength + 1)) {
+                    System.err.println("input line does not have length " + this.minLineLength + " or "
+                            + (this.minLineLength + 1) + " but " + splitLength + ": " + t.getText());
+                }
+            }
         }
-        carrier.setTarget(targetTokenSeq);
         carrier.setData(ts);
 
         return carrier;
@@ -54,11 +64,13 @@ public class LineToTargetTextPipe extends Pipe implements Serializable {
     private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
         // read version number
         in.readInt();
+        this.minLineLength = in.readInt();
 
     }
 
     private void writeObject(ObjectOutputStream out) throws IOException {
         out.writeInt(CURRENT_SERIAL_VERSION);
+        out.writeInt(this.minLineLength);
 
     }
 

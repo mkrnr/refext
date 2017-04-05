@@ -31,6 +31,7 @@ import cc.mallet.pipe.tsf.OffsetConjunctions;
 import cc.mallet.pipe.tsf.TokenTextCharPrefix;
 import cc.mallet.pipe.tsf.TokenTextCharSuffix;
 import cc.mallet.types.InstanceList;
+import de.exciteproject.refext.train.pipe.AddTargetToLinePipe;
 import de.exciteproject.refext.train.pipe.FeaturePipeProvider;
 import de.exciteproject.refext.train.pipe.LineToTargetTextPipe;
 
@@ -153,6 +154,7 @@ public class ReferenceExtractorTrainer {
             throws LangDetectException, IOException {
         ArrayList<Pipe> pipes = new ArrayList<Pipe>();
         pipes.add(new LineGroupString2TokenSequence());
+        pipes.add(new AddTargetToLinePipe(6));
         pipes.add(new LineToTargetTextPipe());
 
         // pipes.add(new XmlRefTagToTargetPipe("ref", "oth", "REF", "REFO",
