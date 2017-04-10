@@ -50,12 +50,11 @@ public class CrfReferenceLineAnnotator {
             @SuppressWarnings("unchecked")
             Sequence<String> output = this.crf.transduce((Sequence<String>) instance.getData());
             for (int i = 0; i < output.size(); i++) {
-
                 // annotatedLines.add(output.get(i).toString() + "\t" +
                 // linesWithLayout.get(i).split("\t")[0]);
                 String[] layoutLineSplit = linesWithLayout.get(i).split("\t");
-                if (layoutLineSplit.length > 1) {
-                    annotatedLines.add(output.get(i).toString() + "\t" + layoutLineSplit[1]);
+                if (layoutLineSplit.length > 0) {
+                    annotatedLines.add(output.get(i).toString() + "\t" + layoutLineSplit[0]);
                 }
             }
         }
