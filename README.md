@@ -52,43 +52,47 @@ The two main ways to use this main class are:
 ## Via Java code
 Another way of running a reference extraction process using an existing CRF model is with the [ReferenceExtractor](src/main/java/de/exciteproject/refext/ReferenceExtractor.java) class. The refext library can be imported to a maven project by adding the following entries to `pom.xml` (check the [JitPack website](https://jitpack.io/#exciteproject/refext) for current releases):
 
-    <repositories>
-      ...
-      <repository>
-        <id>jitpack.io</id>
-        <url>https://jitpack.io</url>
-      </repository>
-    </repositories>
-    <dependencies>
-      ...
-      <dependency>
-        <groupId>com.github.exciteproject</groupId>
-        <artifactId>refext</artifactId>
-        <version>[current version]</version>
-      </dependency>
-    </dependencies>
+```xml
+<repositories>
+  ...
+  <repository>
+    <id>jitpack.io</id>
+    <url>https://jitpack.io</url>
+  </repository>
+</repositories>
+<dependencies>
+  ...
+  <dependency>
+    <groupId>com.github.exciteproject</groupId>
+    <artifactId>refext</artifactId>
+    <version>[current version]</version>
+  </dependency>
+</dependencies>
+```
 
 An example Java class:
 
-    import java.io.File;
-    import java.io.IOException;
-    import java.util.List;
+```java
+import java.io.File;
+import java.io.IOException;
+import java.util.List;
 
-    import de.exciteproject.refext.ReferenceExtractor;
-    import pl.edu.icm.cermine.bibref.model.BibEntry;
-    import pl.edu.icm.cermine.exception.AnalysisException;
+import de.exciteproject.refext.ReferenceExtractor;
+import pl.edu.icm.cermine.bibref.model.BibEntry;
+import pl.edu.icm.cermine.exception.AnalysisException;
 
-    public class Example {
-        public static void main(String[] args) throws IOException, AnalysisException {
-            ReferenceExtractor referenceExtractor = new ReferenceExtractor(new File(args[0]));
-            List<String> references = referenceExtractor.extractReferencesFromPdf(
-                    new File(args[1]));
-            List<BibEntry> bibEntries = referenceExtractor.extractBibEntriesFromReferences(references);
-            for (BibEntry bibEntry : bibEntries) {
-                System.out.println(bibEntry.toBibTeX());
-            }
+public class Example {
+    public static void main(String[] args) throws IOException, AnalysisException {
+        ReferenceExtractor referenceExtractor = new ReferenceExtractor(new File(args[0]));
+        List<String> references = referenceExtractor.extractReferencesFromPdf(
+                new File(args[1]));
+        List<BibEntry> bibEntries = referenceExtractor.extractBibEntriesFromReferences(references);
+        for (BibEntry bibEntry : bibEntries) {
+            System.out.println(bibEntry.toBibTeX());
         }
     }
+}
+```
 
 ## Training New Models
 Training a new supervised CRF model consists of the following steps:
