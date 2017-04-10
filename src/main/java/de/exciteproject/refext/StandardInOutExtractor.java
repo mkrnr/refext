@@ -118,56 +118,5 @@ public class StandardInOutExtractor {
                 System.out.println(inputFileBaseName + "\t" + reference);
             }
         }
-        // List<File> inputFiles = new ArrayList<File>();
-        // String inputDirectoryPath = null;
-
-        // if (this.pdfFile != null) {
-        // inputFiles = FileUtils.asList(this.pdfFile);
-        // inputDirectoryPath =
-        // FileUtils.getDirctory(this.pdfFile).getAbsolutePath();
-
-        // } else {
-        // if (this.layoutFile != null) {
-        // inputFiles = FileUtils.asList(this.layoutFile);
-        // inputDirectoryPath =
-        // FileUtils.getDirctory(this.layoutFile).getAbsolutePath();
-        // }
-        // }
-
-        // for (File inputFile : inputFiles) {
-        // System.out.println("processing: " + inputFile);
-
-        // File outputFile = this.getOutputFile(inputFile, inputDirectoryPath);
-
-        // // skip if outputFile already exists
-        // if (this.skipIfOutputExists && outputFile.exists()) {
-        // continue;
-        // }
-
-        // List<String> referenceStrings = new ArrayList<String>();
-        // if (this.pdfFile != null) {
-        // // skip files that are larger than 10MB
-        // if (inputFile.length() > this.pdfFileSizeLimit) {
-        // continue;
-        // }
-
-        // referenceStrings =
-        // referenceExtractor.extractReferencesFromPdf(inputFile);
-        // } else {
-        // if (this.layoutFile != null) {
-        // referenceStrings =
-        // referenceExtractor.extractReferencesFromLayoutFile(inputFile);
-        // }
-        // }
-        // BufferedWriter bufferedWriter = new BufferedWriter(new
-        // FileWriter(outputFile));
-
-        // for (String referenceString : referenceStrings) {
-        // bufferedWriter.write(referenceString);
-        // bufferedWriter.newLine();
-        // }
-
-        // bufferedWriter.close();
-        // }
     }
 }
