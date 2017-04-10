@@ -8,7 +8,6 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.exciteproject.refext.extract.CermineLineLayoutExtractor;
 import de.exciteproject.refext.extract.CrfReferenceLineAnnotator;
 import de.exciteproject.refext.util.FileUtils;
 import pl.edu.icm.cermine.ComponentConfiguration;
@@ -34,7 +33,8 @@ public class TrainingDataAnnotator {
         for (File inputFile : inputFiles) {
             String inputFileSubPath = inputFile.getAbsolutePath().replaceAll(inputDirectoryPath, "");
 
-            inputFileSubPath = inputFileSubPath.replaceAll(".pdf$", ".xml");
+            // TODO make this more pretty
+            inputFileSubPath = inputFileSubPath.replaceAll(".csv$", ".xml");
             File outputFile = new File(outputDir + inputFileSubPath);
             if (outputFile.exists()) {
                 continue;
@@ -46,17 +46,16 @@ public class TrainingDataAnnotator {
     }
 
     private CrfReferenceLineAnnotator crfReferenceLineAnnotator;
-    private CermineLineLayoutExtractor cermineLineLayoutExtractor;
 
     public TrainingDataAnnotator(File crfModelFile) throws AnalysisException {
         this.crfReferenceLineAnnotator = new CrfReferenceLineAnnotator(crfModelFile);
         ComponentConfiguration componentConfiguration = new ComponentConfiguration();
 
-        this.cermineLineLayoutExtractor = new CermineLineLayoutExtractor(componentConfiguration);
     }
 
-    public List<String> annotateText(File pdfFile) throws IOException, AnalysisException {
-        List<String> layoutLines = this.cermineLineLayoutExtractor.extract(pdfFile);
+    public List<String> annotateText(File layoutFile) throws IOException, AnalysisException {
+        List<String> layoutLines = org.apache.commons.io.FileUtils.readLines(layoutFile, Charset.defaultCharset());
+
         List<String> annotatedLines = this.crfReferenceLineAnnotator.annotate(layoutLines);
 
         List<String> xmlAnnotatedLines = new ArrayList<String>();
