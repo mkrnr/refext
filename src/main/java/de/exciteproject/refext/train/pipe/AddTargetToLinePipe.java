@@ -44,7 +44,6 @@ public class AddTargetToLinePipe extends Pipe implements Serializable {
 
         TokenSequence ts = (TokenSequence) carrier.getData();
         for (int i = 0; i < ts.size(); i++) {
-
             Token t = ts.get(i);
             int splitLength = t.getText().split("\t").length;
             if (splitLength == this.minLineLength) {

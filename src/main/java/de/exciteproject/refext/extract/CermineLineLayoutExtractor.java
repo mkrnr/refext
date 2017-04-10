@@ -64,7 +64,7 @@ public class CermineLineLayoutExtractor extends CermineLineExtractor {
                     "");
             currentOutputDirectory = new File(outputDir.getAbsolutePath() + File.separator + subDirectories);
 
-            String outputFileName = FilenameUtils.removeExtension(inputFile.getName()) + ".txt";
+            String outputFileName = FilenameUtils.removeExtension(inputFile.getName()) + ".csv";
             File outputFile = new File(currentOutputDirectory.getAbsolutePath() + File.separator + outputFileName);
 
             // skip computation if outputFile already exists
