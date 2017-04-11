@@ -4,6 +4,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,9 +15,13 @@ import com.beust.jcommander.Parameter;
 import com.beust.jcommander.ParameterException;
 import com.beust.jcommander.converters.FileConverter;
 
+import de.exciteproject.refext.train.ReferenceExtractorTrainer;
 import de.exciteproject.refext.util.FileUtils;
 import pl.edu.icm.cermine.exception.AnalysisException;
 
+/**
+ * Class for running reference extraction tasks on (folders of) PDF of layout files using a given CRF model trained with {@link ReferenceExtractorTrainer}.
+ */
 public class Main {
 
     public static void main(String[] args) throws IOException, AnalysisException {
@@ -56,7 +61,7 @@ public class Main {
     private File pdfFile;
 
     @Parameter(names = { "-layout",
-            "--layout-path" }, description = "File or directory where files contain lines and layout information (see CermineLineLayoutExtractor)", converter = FileConverter.class)
+            "--input-layout-path" }, description = "File or directory where files contain lines and layout information (see CermineLineLayoutExtractor)", converter = FileConverter.class)
     private File layoutFile;
 
     @Parameter(names = { "-outputDir",
@@ -64,7 +69,6 @@ public class Main {
     private File outputDir;
 
     private File getOutputFile(File inputFile, String inputDirectoryPath) {
-
         String subDirectories = inputFile.getParentFile().getAbsolutePath().replaceFirst(inputDirectoryPath, "");
         File currentOutputDirectory = new File(this.outputDir.getAbsolutePath() + File.separator + subDirectories);
 
@@ -113,7 +117,7 @@ public class Main {
 
             List<String> referenceStrings = new ArrayList<String>();
             if (this.pdfFile != null) {
-                // skip files that are larger than 10MB
+                // skip files that are larger than pdfFileSizeLimit
                 if (inputFile.length() > this.pdfFileSizeLimit) {
                     continue;
                 }
@@ -121,7 +125,7 @@ public class Main {
                 referenceStrings = referenceExtractor.extractReferencesFromPdf(inputFile);
             } else {
                 if (this.layoutFile != null) {
-                    referenceStrings = referenceExtractor.extractReferencesFromLayoutFile(inputFile);
+                    referenceStrings = referenceExtractor.extractReferencesFromLayoutFile(inputFile,Charset.defaultCharset());
                 }
             }
             BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(outputFile));

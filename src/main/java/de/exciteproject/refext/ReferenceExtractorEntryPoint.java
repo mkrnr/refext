@@ -8,6 +8,9 @@ import java.util.logging.Logger;
 import pl.edu.icm.cermine.exception.AnalysisException;
 import py4j.GatewayServer;
 
+/**
+ * Class for generating a GatewayServer for access via py4j
+ */
 public class ReferenceExtractorEntryPoint {
 
     public static void main(String[] args) throws IOException, AnalysisException {

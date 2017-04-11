@@ -30,7 +30,7 @@ public class LabelLayoutMerger {
 
             String labelInputFileSubPath = labeledInputFile.getAbsolutePath()
                     .replaceFirst(labeledInputDirectory.getAbsolutePath(), "");
-            File layoutInputFile = new File(layoutInputDirectory + labelInputFileSubPath.replaceFirst(".xml$", ".txt"));
+            File layoutInputFile = new File(layoutInputDirectory + labelInputFileSubPath.replaceFirst(".txt$", ".csv"));
             layoutInputFile.getParentFile().mkdirs();
 
             File outputFile = new File(outputDirectory + labelInputFileSubPath);
