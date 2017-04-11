@@ -18,7 +18,7 @@ import cc.mallet.types.Token;
 import cc.mallet.types.TokenSequence;
 
 /**
- * Set the text until the first tab charater as the token text
+ * Pipe that removes the characters until the first tab character and sets them as the target
  */
 
 public class LineToTargetTextPipe extends Pipe implements Serializable {

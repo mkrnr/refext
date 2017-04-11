@@ -13,8 +13,7 @@ import de.exciteproject.refext.util.FileUtils;
 import pl.edu.icm.cermine.exception.AnalysisException;
 
 /**
- * Simplified annotator for generating training data. Does not handle
- * footers/headers that appear inside a reference string.
+ * Class for converting XML tagged references into BIO notation
  */
 public class XmlToBioConverter {
 
@@ -95,23 +94,5 @@ public class XmlToBioConverter {
 
         }
         return bioAnnotatedLines;
-    }
-
-    private String getAnnotation(List<String> annotatedLines, int index) {
-        if (annotatedLines.size() <= index) {
-            return "";
-        } else {
-            String[] lineSplit = annotatedLines.get(index).split("\\t");
-            return lineSplit[0];
-        }
-    }
-
-    private String getLine(List<String> annotatedLines, int index) {
-        if (annotatedLines.size() <= index) {
-            return "";
-        } else {
-            String[] lineSplit = annotatedLines.get(index).split("\\t");
-            return lineSplit[1];
-        }
     }
 }

@@ -13,8 +13,9 @@ import cc.mallet.types.Token;
 import cc.mallet.types.TokenSequence;
 
 /**
- * A class that counts the number of matches of given regular expression per
- * token in a tokenSequence.
+ * Pipe that adds a feature if a given line is shorter than the previous line
+ * <p>
+ * TODO: Add threshold
  */
 public class ShorterLinePipe extends Pipe implements Serializable {
 

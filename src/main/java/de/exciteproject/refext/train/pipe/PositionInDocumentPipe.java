@@ -13,8 +13,7 @@ import cc.mallet.types.Token;
 import cc.mallet.types.TokenSequence;
 
 /**
- * A class that counts the number of matches of given regular expression per
- * token in a tokenSequence.
+ * Pipe that adds a feature based on the position of a given line in the document
  */
 public class PositionInDocumentPipe extends Pipe implements Serializable {
 

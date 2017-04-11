@@ -16,9 +16,12 @@ import cc.mallet.pipe.Pipe;
 import cc.mallet.types.Instance;
 import cc.mallet.types.Token;
 import cc.mallet.types.TokenSequence;
+import de.exciteproject.refext.extract.CermineLineLayoutExtractor;
 
 /**
- * Set the text until the first tab charater as the token text
+ * Adds a O-tag in front of a given layout line if length==minLineLength. This is needed 
+ * for files that generated with {@link CermineLineLayoutExtractor}. This is needed 
+ * since the mallet CRF expects a target variable, even for applying a trained model.
  */
 
 public class AddTargetToLinePipe extends Pipe implements Serializable {

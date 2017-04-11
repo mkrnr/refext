@@ -3,9 +3,7 @@ package de.exciteproject.refext.train.pipe;
 import cc.mallet.types.Token;
 
 /**
- * Computes features based on the layout of lines in the PDF file <br>
- * Input per line:
- * text[tab]x-coordinate[tab]y-coordinate[tab]height[tab]width[tab]zone-id
+ * Computes a feature that indicates an indentation of a given line in comparison with the previous line
  */
 public class IndentLayoutPipe extends LayoutPipe {
 

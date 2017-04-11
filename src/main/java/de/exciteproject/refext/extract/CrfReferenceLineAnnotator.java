@@ -15,8 +15,12 @@ import cc.mallet.types.Instance;
 import cc.mallet.types.InstanceList;
 import cc.mallet.types.Sequence;
 import cc.mallet.util.FileUtils;
+import de.exciteproject.refext.train.ReferenceExtractorTrainer;
 import pl.edu.icm.cermine.exception.AnalysisException;
 
+/**
+ * Class for annotating given lines with layout (see {@link CermineLineLayoutExtractor} for format) using a trained CRF with {@link ReferenceExtractorTrainer} in a BIO format.
+ */
 public class CrfReferenceLineAnnotator {
 
     private CRF crf;

@@ -14,8 +14,7 @@ import cc.mallet.types.TokenSequence;
 import de.exciteproject.refext.util.LanguageAnalyzer;
 
 /**
- * A class that counts the number of matches of given regular expression per
- * token in a tokenSequence.
+ * Computes a feature based on the language of a given line
  */
 public class LanguagePipe extends Pipe implements Serializable {
 

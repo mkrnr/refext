@@ -3,6 +3,9 @@ package de.exciteproject.refext.extract;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Class for extracting and merging references from a list of BIO tagged input lines.
+ */
 public class ReferenceLineMerger {
 
     public static List<String> merge(List<String> inputLines) {
