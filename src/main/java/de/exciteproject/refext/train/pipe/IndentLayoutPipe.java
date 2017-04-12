@@ -3,7 +3,8 @@ package de.exciteproject.refext.train.pipe;
 import cc.mallet.types.Token;
 
 /**
- * Computes a feature that indicates an indentation of a given line in comparison with the previous line
+ * Computes a feature that indicates an indentation of a given line in
+ * comparison with the previous line
  */
 public class IndentLayoutPipe extends LayoutPipe {
 

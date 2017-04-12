@@ -13,7 +13,8 @@ import cc.mallet.types.Token;
 import cc.mallet.types.TokenSequence;
 
 /**
- * A pipe that adds a feature if a given line appears after a reference section heading
+ * A pipe that adds a feature if a given line appears after a reference section
+ * heading
  */
 public class ReferenceSectionPipe extends Pipe implements Serializable {
 

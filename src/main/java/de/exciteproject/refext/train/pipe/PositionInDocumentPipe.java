@@ -13,7 +13,8 @@ import cc.mallet.types.Token;
 import cc.mallet.types.TokenSequence;
 
 /**
- * Pipe that adds a feature based on the position of a given line in the document
+ * Pipe that adds a feature based on the position of a given line in the
+ * document
  */
 public class PositionInDocumentPipe extends Pipe implements Serializable {
 

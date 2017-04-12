@@ -19,7 +19,9 @@ import de.exciteproject.refext.train.ReferenceExtractorTrainer;
 import pl.edu.icm.cermine.exception.AnalysisException;
 
 /**
- * Class for annotating given lines with layout (see {@link CermineLineLayoutExtractor} for format) using a trained CRF with {@link ReferenceExtractorTrainer} in a BIO format.
+ * Class for annotating given lines with layout (see
+ * {@link CermineLineLayoutExtractor} for format) using a trained CRF with
+ * {@link ReferenceExtractorTrainer} in a BIO format.
  */
 public class CrfReferenceLineAnnotator {
 

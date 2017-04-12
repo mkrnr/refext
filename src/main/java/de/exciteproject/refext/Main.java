@@ -20,7 +20,8 @@ import de.exciteproject.refext.util.FileUtils;
 import pl.edu.icm.cermine.exception.AnalysisException;
 
 /**
- * Class for running reference extraction tasks on (folders of) PDF of layout files using a given CRF model trained with {@link ReferenceExtractorTrainer}.
+ * Class for running reference extraction tasks on (folders of) PDF of layout
+ * files using a given CRF model trained with {@link ReferenceExtractorTrainer}.
  */
 public class Main {
 
@@ -125,7 +126,8 @@ public class Main {
                 referenceStrings = referenceExtractor.extractReferencesFromPdf(inputFile);
             } else {
                 if (this.layoutFile != null) {
-                    referenceStrings = referenceExtractor.extractReferencesFromLayoutFile(inputFile,Charset.defaultCharset());
+                    referenceStrings = referenceExtractor.extractReferencesFromLayoutFile(inputFile,
+                            Charset.defaultCharset());
                 }
             }
             BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(outputFile));

@@ -44,11 +44,6 @@ public class StandardInOutExtractor {
     @Parameter(names = { "-h", "--help" }, description = "print information about available parameters", help = true)
     private boolean help;
 
-    // @Parameter(names = { "-skipExist",
-    // "--skip-existing-ouput-files" }, description = "will skip files for which
-    // there is already an output file")
-    // private boolean skipIfOutputExists = false;
-
     @Parameter(names = { "-sizeLimit", "--pdf-file-size-limit" }, description = "limit in byte for pdf files")
     private long pdfFileSizeLimit = 10000000;
 
@@ -56,33 +51,10 @@ public class StandardInOutExtractor {
             "--crf-model-path" }, description = "File containing a CRF model (see SupervisedCrfTrainer)", required = true, converter = FileConverter.class)
     private File crfModelFile;
 
-    // @Parameter(names = { "-pdf",
-    // "--input-pdf-path" }, description = "File or directory containing PDFs",
-    // converter = FileConverter.class)
-    // private File pdfFile;
-    //
-    // @Parameter(names = { "-layout",
-    // "--layout-path" }, description = "File or directory where files contain
-    // lines and layout information (see CermineLineLayoutExtractor)", converter
-    // = FileConverter.class)
-    // private File layoutFile;
-    // @Parameter(names = { "-outputDir",
-    // "--output-directory" }, description = "Directory to store the output",
-    // required = true, converter = FileConverter.class)
-    // private File outputDir;
-
     private void run() throws AnalysisException, IOException {
 
         ReferenceExtractor referenceExtractor = new ReferenceExtractor(this.crfModelFile);
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
-        // int ch;
-        // System.out.print("Enter some text: ");
-        // String test = "";
-        // while ((ch = System.in.read()) != '\n') {
-        // test += (char) ch;
-        // // System.out.print((char) ch);
-        // }
-        // System.out.println("total: " + test);
 
         String line;
         while ((line = bufferedReader.readLine()) != null) {
@@ -107,7 +79,7 @@ public class StandardInOutExtractor {
             File inputFile = new File(extractorJsonInput.inputFilePath);
             List<String> references = new ArrayList<String>();
             if (extractorJsonInput.isLayoutFile) {
-                references = referenceExtractor.extractReferencesFromLayoutFile(inputFile,Charset.defaultCharset());
+                references = referenceExtractor.extractReferencesFromLayoutFile(inputFile, Charset.defaultCharset());
             }
             if (extractorJsonInput.isPdfFile) {
                 references = referenceExtractor.extractReferencesFromPdf(inputFile);

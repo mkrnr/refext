@@ -20,7 +20,7 @@ import pl.edu.icm.cermine.structure.HierarchicalReadingOrderResolver;
 import pl.edu.icm.cermine.structure.model.BxLine;
 
 /**
- * Extension of {@link CermineLineExtractor} to also store layout information of 
+ * Extension of {@link CermineLineExtractor} to also store layout information of
  * the individual lines as CSVs.
  */
 public class CermineLineLayoutExtractor extends CermineLineExtractor {
@@ -31,8 +31,8 @@ public class CermineLineLayoutExtractor extends CermineLineExtractor {
      *            args[0]: directory containing pdf files and/or subfolders with
      *            pdf files </br>
      *            args[1]: directory in which the outputfiles are stored,
-     *            including the subdirectories
-     *            args[2]: long that specifies the maximum pdf file size in bytes to prevent heap space errors
+     *            including the subdirectories args[2]: long that specifies the
+     *            maximum pdf file size in bytes to prevent heap space errors
      *
      * @throws IOException
      * @throws AnalysisException

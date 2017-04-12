@@ -4,7 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Class for extracting and merging references from a list of BIO tagged input lines.
+ * Class for extracting and merging references from a list of BIO tagged input
+ * lines.
  */
 public class ReferenceLineMerger {
 

@@ -3,16 +3,12 @@ package de.exciteproject.refext;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
-import java.util.ArrayList;
 import java.util.List;
 
 import de.exciteproject.refext.extract.CermineLineLayoutExtractor;
 import de.exciteproject.refext.extract.CrfReferenceLineAnnotator;
 import de.exciteproject.refext.extract.ReferenceLineMerger;
 import pl.edu.icm.cermine.ComponentConfiguration;
-import pl.edu.icm.cermine.bibref.BibReferenceParser;
-import pl.edu.icm.cermine.bibref.CRFBibReferenceParser;
-import pl.edu.icm.cermine.bibref.model.BibEntry;
 import pl.edu.icm.cermine.exception.AnalysisException;
 
 /**
@@ -33,13 +29,9 @@ public class ReferenceExtractor {
         this.cermineLineLayoutExtractor = new CermineLineLayoutExtractor(componentConfiguration);
     }
 
-    public List<String> extractReferencesFromLayoutFile(File layoutFile, Charset charset) throws IOException, AnalysisException {
+    public List<String> extractReferencesFromLayoutFile(File layoutFile, Charset charset)
+            throws IOException, AnalysisException {
         List<String> layoutLines = org.apache.commons.io.FileUtils.readLines(layoutFile, charset);
-        return this.extractReferencesFromLayoutLines(layoutLines);
-    }
-
-    public List<String> extractReferencesFromPdf(File pdfFile) throws IOException, AnalysisException {
-        List<String> layoutLines = this.cermineLineLayoutExtractor.extract(pdfFile);
         return this.extractReferencesFromLayoutLines(layoutLines);
     }
 
@@ -48,5 +40,10 @@ public class ReferenceExtractor {
         List<String> annotatedLines = this.crfReferenceLineAnnotator.annotate(layoutLines);
         List<String> referenceStrings = ReferenceLineMerger.merge(annotatedLines);
         return referenceStrings;
+    }
+
+    public List<String> extractReferencesFromPdf(File pdfFile) throws IOException, AnalysisException {
+        List<String> layoutLines = this.cermineLineLayoutExtractor.extract(pdfFile);
+        return this.extractReferencesFromLayoutLines(layoutLines);
     }
 }
