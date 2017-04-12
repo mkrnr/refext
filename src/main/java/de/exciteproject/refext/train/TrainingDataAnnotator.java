@@ -10,7 +10,6 @@ import java.util.List;
 
 import de.exciteproject.refext.extract.CrfReferenceLineAnnotator;
 import de.exciteproject.refext.util.FileUtils;
-import pl.edu.icm.cermine.ComponentConfiguration;
 import pl.edu.icm.cermine.exception.AnalysisException;
 
 /**
@@ -49,8 +48,6 @@ public class TrainingDataAnnotator {
 
     public TrainingDataAnnotator(File crfModelFile) throws AnalysisException {
         this.crfReferenceLineAnnotator = new CrfReferenceLineAnnotator(crfModelFile);
-        ComponentConfiguration componentConfiguration = new ComponentConfiguration();
-
     }
 
     public List<String> annotateText(File layoutFile) throws IOException, AnalysisException {
