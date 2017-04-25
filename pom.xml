@@ -100,7 +100,7 @@
 	<dependency>
       <groupId>com.github.Ceon</groupId>
       <artifactId>cermine</artifactId>
-      <version>13c44e9b40</version>
+      <version>CERMINE-1.12</version>
 	</dependency>
     <dependency>
         <groupId>org.apache.commons</groupId>
