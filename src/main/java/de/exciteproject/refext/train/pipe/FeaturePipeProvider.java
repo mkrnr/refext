@@ -1,6 +1,5 @@
 package de.exciteproject.refext.train.pipe;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.Calendar;
 import java.util.Collections;
@@ -72,15 +71,9 @@ public class FeaturePipeProvider {
     }
 
     private HashMap<String, Pipe> featurePipes;
-    private File firstNameFile;
-
-    private File lastNameFile;
     private String csvSeparator = "\t";
 
-    public FeaturePipeProvider(File firstNameFile, File lastNameFile) throws LangDetectException, IOException {
-        this.firstNameFile = firstNameFile;
-        this.lastNameFile = lastNameFile;
-
+    public FeaturePipeProvider() throws LangDetectException, IOException {
         this.createFeaturePipes();
     }
 

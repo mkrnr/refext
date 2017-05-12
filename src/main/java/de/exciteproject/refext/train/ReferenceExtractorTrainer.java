@@ -47,9 +47,8 @@ public class ReferenceExtractorTrainer {
 
     private SerialPipes serialPipes;
 
-    public ReferenceExtractorTrainer(List<String> featureNames, File firstNameFile, File lastNameFile)
-            throws LangDetectException, IOException {
-        this.serialPipes = this.buildSerialPipes(featureNames, firstNameFile, lastNameFile);
+    public ReferenceExtractorTrainer(List<String> featureNames) throws LangDetectException, IOException {
+        this.serialPipes = this.buildSerialPipes(featureNames);
 
         this.crf = new CRF(this.serialPipes, null);
 
@@ -150,8 +149,7 @@ public class ReferenceExtractorTrainer {
     }
 
     // TODO Add configurations (optional with default value)
-    private SerialPipes buildSerialPipes(List<String> featureNames, File firstNameFile, File lastNameFile)
-            throws LangDetectException, IOException {
+    private SerialPipes buildSerialPipes(List<String> featureNames) throws LangDetectException, IOException {
         ArrayList<Pipe> pipes = new ArrayList<Pipe>();
         pipes.add(new LineGroupString2TokenSequence());
         pipes.add(new AddTargetToLinePipe(6));
@@ -160,7 +158,7 @@ public class ReferenceExtractorTrainer {
         // pipes.add(new XmlRefTagToTargetPipe("ref", "oth", "REF", "REFO",
         // "O"));
 
-        FeaturePipeProvider featurePipeProvider = new FeaturePipeProvider(firstNameFile, lastNameFile);
+        FeaturePipeProvider featurePipeProvider = new FeaturePipeProvider();
         for (String featureName : featureNames) {
             pipes.add(featurePipeProvider.getPipe(featureName));
         }
