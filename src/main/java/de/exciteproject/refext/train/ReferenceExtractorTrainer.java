@@ -155,9 +155,6 @@ public class ReferenceExtractorTrainer {
         pipes.add(new AddTargetToLinePipe(6));
         pipes.add(new LineToTargetTextPipe());
 
-        // pipes.add(new XmlRefTagToTargetPipe("ref", "oth", "REF", "REFO",
-        // "O"));
-
         FeaturePipeProvider featurePipeProvider = new FeaturePipeProvider();
         for (String featureName : featureNames) {
             pipes.add(featurePipeProvider.getPipe(featureName));

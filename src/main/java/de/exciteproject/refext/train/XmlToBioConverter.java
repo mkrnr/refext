@@ -32,9 +32,9 @@ public class XmlToBioConverter {
 
             inputFileSubPath = inputFileSubPath.replaceAll(".xml$", ".csv");
             File outputFile = new File(outputDir + inputFileSubPath);
-            if (outputFile.exists()) {
-                continue;
-            }
+            // if (outputFile.exists()) {
+            // continue;
+            // }
 
             List<String> annotatedText = xmlToBioConverter.annotateText(inputFile);
             Files.write(Paths.get(outputFile.getAbsolutePath()), annotatedText, Charset.defaultCharset());
