@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+import org.apache.commons.io.FilenameUtils;
+
 import de.exciteproject.refext.util.FileUtils;
 import pl.edu.icm.cermine.exception.AnalysisException;
 
@@ -21,8 +23,11 @@ public class LabelFilterer {
     public static void main(String[] args) throws AnalysisException, IOException {
         File inputDir = new File(args[0]);
         File outputDir = new File(args[1]);
-        if (!outputDir.exists()) {
-            outputDir.mkdirs();
+        int ratio = Integer.parseInt(args[2]);
+        File ratioOutputDir = new File(outputDir.getAbsolutePath() + ratio);
+
+        if (!ratioOutputDir.exists()) {
+            ratioOutputDir.mkdirs();
         }
         LabelFilterer xmlToBioConverter = new LabelFilterer();
         List<File> inputFiles = FileUtils.asList(inputDir);
@@ -31,8 +36,8 @@ public class LabelFilterer {
         for (File inputFile : inputFiles) {
             String inputFileSubPath = inputFile.getAbsolutePath().replaceAll(inputDirectoryPath, "");
 
-            inputFileSubPath = inputFileSubPath.replaceAll(".xml$", ".csv");
-            File outputFile = new File(outputDir + inputFileSubPath);
+            inputFileSubPath = FilenameUtils.removeExtension(inputFileSubPath) + ".csv";
+            File outputFile = new File(ratioOutputDir + inputFileSubPath);
 
             List<String> annotatedText = xmlToBioConverter.filter(inputFile, "O", 10);
             Files.write(Paths.get(outputFile.getAbsolutePath()), annotatedText, Charset.defaultCharset());

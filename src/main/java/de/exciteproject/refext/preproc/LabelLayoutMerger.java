@@ -10,6 +10,8 @@ import java.io.IOException;
 import java.io.LineNumberReader;
 import java.util.List;
 
+import org.apache.commons.io.FilenameUtils;
+
 import de.exciteproject.refext.util.FileUtils;
 
 /**
@@ -30,7 +32,8 @@ public class LabelLayoutMerger {
 
             String labelInputFileSubPath = labeledInputFile.getAbsolutePath()
                     .replaceFirst(labeledInputDirectory.getAbsolutePath(), "");
-            File layoutInputFile = new File(layoutInputDirectory + labelInputFileSubPath.replaceFirst(".txt$", ".csv"));
+            labelInputFileSubPath = FilenameUtils.removeExtension(labelInputFileSubPath).concat(".csv");
+            File layoutInputFile = new File(layoutInputDirectory + labelInputFileSubPath);
             layoutInputFile.getParentFile().mkdirs();
 
             File outputFile = new File(outputDirectory + labelInputFileSubPath);
