@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+import org.apache.commons.io.FilenameUtils;
+
 import de.exciteproject.refext.util.FileUtils;
 import pl.edu.icm.cermine.exception.AnalysisException;
 
@@ -29,8 +31,8 @@ public class XmlToBioConverter {
 
         for (File inputFile : inputFiles) {
             String inputFileSubPath = inputFile.getAbsolutePath().replaceAll(inputDirectoryPath, "");
+            inputFileSubPath = FilenameUtils.removeExtension(inputFileSubPath).concat(".csv");
 
-            inputFileSubPath = inputFileSubPath.replaceAll(".xml$", ".csv");
             File outputFile = new File(outputDir + inputFileSubPath);
             // if (outputFile.exists()) {
             // continue;
@@ -68,20 +70,20 @@ public class XmlToBioConverter {
                 line = line.replaceFirst("</ref>", "");
             }
             if (line.contains("<oth>")) {
-                label = "B-REFO";
+                label = "O-REF";
                 insideOth = true;
                 line = line.replaceFirst("<oth>", "");
             }
             if (line.contains("</oth")) {
                 if (label.isEmpty()) {
-                    label = "I-REFO";
+                    label = "O-REF";
                 }
                 insideOth = false;
                 line = line.replaceFirst("</oth>", "");
             }
             if (label.isEmpty()) {
                 if (insideOth) {
-                    label = "I-REFO";
+                    label = "O-REF";
                 } else {
                     if (insideRef) {
                         label = "I-REF";
