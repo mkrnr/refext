@@ -96,12 +96,12 @@
           <artifactId>trove4j</artifactId>
         </exclusion>
       </exclusions>
-	</dependency>
-	<dependency>
-      <groupId>com.github.Ceon</groupId>
-      <artifactId>cermine</artifactId>
-      <version>CERMINE-1.12</version>
-	</dependency>
+    </dependency>
+    <dependency>
+      <groupId>pl.edu.icm.cermine</groupId>
+      <artifactId>cermine-impl</artifactId>
+      <version>1.13</version>
+    </dependency>
     <dependency>
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-lang3</artifactId>
@@ -135,8 +135,9 @@
   </dependencies>
   <repositories>
     <repository>
-      <id>jitpack.io</id>
-      <url>https://jitpack.io</url>
+      <id>icm</id>
+      <name>ICM repository</name>
+      <url>http://maven.icm.edu.pl/artifactory/repo</url>
     </repository>
   </repositories>
 </project>
