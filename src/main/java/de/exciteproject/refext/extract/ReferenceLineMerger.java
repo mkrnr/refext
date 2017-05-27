@@ -19,12 +19,13 @@ public class ReferenceLineMerger {
         String currentReference = null;
         for (String inputLine : inputLines) {
             String[] lineSplit = inputLine.split("\t");
-
-            if (lineSplit[0].equals("B-REF")) {
+            if (lineSplit[0].equals("O") || lineSplit[0].equals("B-REF")) {
                 if (currentReference != null) {
                     references.add(currentReference);
                     currentReference = null;
                 }
+            }
+            if (lineSplit[0].equals("B-REF")) {
                 currentReference = lineSplit[1];
             }
             if (lineSplit[0].equals("I-REF")) {
