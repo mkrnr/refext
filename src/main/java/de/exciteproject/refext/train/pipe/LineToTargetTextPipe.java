@@ -20,8 +20,6 @@ public class LineToTargetTextPipe extends Pipe implements Serializable {
     private static final long serialVersionUID = 1;
     private static final int CURRENT_SERIAL_VERSION = 0;
 
-    // Serialization
-
     @Override
     public Instance pipe(Instance carrier) {
 
@@ -35,6 +33,7 @@ public class LineToTargetTextPipe extends Pipe implements Serializable {
             String lineWithoutFirst = t.getText().replaceFirst("[^\\t]*\t", "");
             // System.out.println(lineWithoutFirst);
             // targetTokenSeq.add(lineSplit[0]);
+
             targetTokenSeq.add(t.getText().split("\t")[0]);
             t.setText(lineWithoutFirst);
 
@@ -45,6 +44,7 @@ public class LineToTargetTextPipe extends Pipe implements Serializable {
         return carrier;
     }
 
+    // Serialization
     private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
         // read version number
         in.readInt();

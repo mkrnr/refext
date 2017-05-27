@@ -34,6 +34,7 @@ import cc.mallet.types.InstanceList;
 import de.exciteproject.refext.train.pipe.AddTargetToLinePipe;
 import de.exciteproject.refext.train.pipe.FeaturePipeProvider;
 import de.exciteproject.refext.train.pipe.LineToTargetTextPipe;
+import de.exciteproject.refext.train.pipe.TargetReplacementPipe;
 
 /**
  * Class for training a supervised CRF for extracting reference strings from a
@@ -47,8 +48,9 @@ public class ReferenceExtractorTrainer {
 
     private SerialPipes serialPipes;
 
-    public ReferenceExtractorTrainer(List<String> featureNames) throws LangDetectException, IOException {
-        this.serialPipes = this.buildSerialPipes(featureNames);
+    public ReferenceExtractorTrainer(List<String> featureNames, List<String> replacements)
+            throws LangDetectException, IOException {
+        this.serialPipes = this.buildSerialPipes(featureNames, replacements);
 
         this.crf = new CRF(this.serialPipes, null);
 
@@ -149,11 +151,13 @@ public class ReferenceExtractorTrainer {
     }
 
     // TODO Add configurations (optional with default value)
-    private SerialPipes buildSerialPipes(List<String> featureNames) throws LangDetectException, IOException {
+    private SerialPipes buildSerialPipes(List<String> featureNames, List<String> replacements)
+            throws LangDetectException, IOException {
         ArrayList<Pipe> pipes = new ArrayList<Pipe>();
         pipes.add(new LineGroupString2TokenSequence());
         pipes.add(new AddTargetToLinePipe(6));
         pipes.add(new LineToTargetTextPipe());
+        pipes.add(new TargetReplacementPipe(replacements));
 
         FeaturePipeProvider featurePipeProvider = new FeaturePipeProvider();
         for (String featureName : featureNames) {

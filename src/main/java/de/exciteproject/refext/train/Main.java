@@ -58,11 +58,16 @@ public class Main {
             "--features" }, description = "comma separated list of features", variableArity = true, required = true)
     private List<String> featureNames;
 
+    @Parameter(names = { "-replace",
+            "--replacements" }, description = "comma separated list of values to replace", variableArity = true, required = false)
+    private List<String> replacements;
+
     // TODO Add configurations (optional with default value)
 
     public void run() throws FileNotFoundException, IOException, LangDetectException {
 
-        ReferenceExtractorTrainer referenceExtractorTrainer = new ReferenceExtractorTrainer(this.featureNames);
+        ReferenceExtractorTrainer referenceExtractorTrainer = new ReferenceExtractorTrainer(this.featureNames,
+                this.replacements);
 
         InstanceList trainingInstances = referenceExtractorTrainer.buildInstanceListFromDir(this.trainingDirectory);
         InstanceList testingInstances = referenceExtractorTrainer.buildInstanceListFromDir(this.testingDirectory);
