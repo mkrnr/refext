@@ -39,7 +39,7 @@ public class LabelFilterer {
             inputFileSubPath = FilenameUtils.removeExtension(inputFileSubPath) + ".csv";
             File outputFile = new File(ratioOutputDir + inputFileSubPath);
 
-            List<String> annotatedText = xmlToBioConverter.filter(inputFile, "O", 10);
+            List<String> annotatedText = xmlToBioConverter.filter(inputFile, "O", ratio);
             Files.write(Paths.get(outputFile.getAbsolutePath()), annotatedText, Charset.defaultCharset());
         }
     }
