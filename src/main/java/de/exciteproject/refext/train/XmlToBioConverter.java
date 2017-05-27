@@ -22,10 +22,14 @@ public class XmlToBioConverter {
     public static void main(String[] args) throws AnalysisException, IOException {
         File inputDir = new File(args[0]);
         File outputDir = new File(args[1]);
+        String bRefLabel = args[2];
+        String iRefLabel = args[3];
+        String oRefLabel = args[4];
+        String otherLabel = args[5];
         if (!outputDir.exists()) {
             outputDir.mkdirs();
         }
-        XmlToBioConverter xmlToBioConverter = new XmlToBioConverter();
+        XmlToBioConverter xmlToBioConverter = new XmlToBioConverter(bRefLabel, iRefLabel, oRefLabel, otherLabel);
         List<File> inputFiles = FileUtils.asList(inputDir);
         String inputDirectoryPath = FileUtils.getDirctory(inputDir).getAbsolutePath();
 
@@ -43,6 +47,18 @@ public class XmlToBioConverter {
         }
     }
 
+    private String bRefLabel;
+    private String iRefLabel;
+    private String oRefLabel;
+    private String otherLabel;
+
+    public XmlToBioConverter(String bRefLabel, String iRefLabel, String oRefLabel, String otherLabel) {
+        this.bRefLabel = bRefLabel;
+        this.iRefLabel = iRefLabel;
+        this.oRefLabel = oRefLabel;
+        this.otherLabel = otherLabel;
+    }
+
     public List<String> annotateText(File inputFile) throws IOException, AnalysisException {
         Scanner s = new Scanner(inputFile);
         ArrayList<String> xmlAnnotatedLines = new ArrayList<String>();
@@ -58,37 +74,37 @@ public class XmlToBioConverter {
             String label = "";
             String line = xmlAnnotatedLines.get(i);
             if (line.contains("<ref>")) {
-                label = "B-REF";
+                label = this.bRefLabel;
                 insideRef = true;
                 line = line.replaceFirst("<ref>", "");
             }
             if (line.contains("</ref")) {
                 if (label.isEmpty()) {
-                    label = "I-REF";
+                    label = this.iRefLabel;
                 }
                 insideRef = false;
                 line = line.replaceFirst("</ref>", "");
             }
             if (line.contains("<oth>")) {
-                label = "O-REF";
+                label = this.oRefLabel;
                 insideOth = true;
                 line = line.replaceFirst("<oth>", "");
             }
             if (line.contains("</oth")) {
                 if (label.isEmpty()) {
-                    label = "O-REF";
+                    label = this.oRefLabel;
                 }
                 insideOth = false;
                 line = line.replaceFirst("</oth>", "");
             }
             if (label.isEmpty()) {
                 if (insideOth) {
-                    label = "O-REF";
+                    label = this.oRefLabel;
                 } else {
                     if (insideRef) {
-                        label = "I-REF";
+                        label = this.iRefLabel;
                     } else {
-                        label = "O";
+                        label = this.otherLabel;
                     }
                 }
             }
