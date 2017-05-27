@@ -31,7 +31,9 @@ public class FeaturePipeProvider {
 
         tempRegexMap.put("YEAR", ".*\\D*" + yearRegex + "\\D*.*");
         tempRegexMap.put("YEARINBRACES", ".*\\(" + yearRegex + "\\).*");
+        tempRegexMap.put("YEARINBRACESCOLON", ".*\\(" + yearRegex + "\\):.*");
 
+        tempRegexMap.put("SPACEINBRACES", ".*\\(.*\\s.*\\).*");
         tempRegexMap.put("PAGERANGE", ".*\\d(-|\\^|\")\\d.*");
         tempRegexMap.put("AMPHERSAND", ".*&.*");
         tempRegexMap.put("QUOTE", ".*[„“””‘’\"'].*");
@@ -41,7 +43,6 @@ public class FeaturePipeProvider {
         tempRegexMap.put("ENDSPERIOD", ".*\\.");
         tempRegexMap.put("ENDSCOMMA", ".*,");
         tempRegexMap.put("ISNUMBER", "\\d+");
-        tempRegexMap.put("IN", "(?i)\\W*in\\W*");
 
         regexMap = Collections.unmodifiableMap(tempRegexMap);
     }

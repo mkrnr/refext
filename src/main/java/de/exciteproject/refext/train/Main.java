@@ -54,6 +54,10 @@ public class Main {
             "--model-output-file" }, description = "file in which the trained crf model is saved", required = true, converter = FileConverter.class)
     private File modelFile;
 
+    @Parameter(names = { "-l1",
+            "--l1-weight" }, description = "L1 weight for crf trainer", required = true, converter = FileConverter.class)
+    private int l1Weight = 10;
+
     @Parameter(names = { "-feat",
             "--features" }, description = "comma separated list of features", variableArity = true, required = true)
     private List<String> featureNames;
@@ -62,12 +66,16 @@ public class Main {
             "--replacements" }, description = "comma separated list of values to replace", variableArity = true, required = false)
     private List<String> replacements;
 
+    @Parameter(names = { "-conjunc",
+            "--conjunctions" }, description = "comma separated list of cunjunctions that are separated by semicolons. \"min\" is used instead of the minus sign", variableArity = true, required = false)
+    private List<String> conjunctions;
+
     // TODO Add configurations (optional with default value)
 
     public void run() throws FileNotFoundException, IOException, LangDetectException {
 
         ReferenceExtractorTrainer referenceExtractorTrainer = new ReferenceExtractorTrainer(this.featureNames,
-                this.replacements);
+                this.replacements, this.conjunctions);
 
         InstanceList trainingInstances = referenceExtractorTrainer.buildInstanceListFromDir(this.trainingDirectory);
         InstanceList testingInstances = referenceExtractorTrainer.buildInstanceListFromDir(this.testingDirectory);
@@ -77,7 +85,7 @@ public class Main {
         referenceExtractorTrainer.addStartState();
         referenceExtractorTrainer.addStatesForThreeQuarterLabelsConnectedAsIn(trainingInstances);
         // referenceExtractorTrainer.setCRFTrainerByLabelLikelihood(10.0);
-        referenceExtractorTrainer.setCRFTrainerByL1LabelLikelihood(20.0);
+        referenceExtractorTrainer.setCRFTrainerByL1LabelLikelihood(this.l1Weight);
         // referenceExtractorTrainer.setCRFTrainerByL1LabelLikelihood(0.75);
 
         CRF crf = referenceExtractorTrainer.train(trainingInstances, testingInstances);

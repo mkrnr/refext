@@ -48,9 +48,9 @@ public class ReferenceExtractorTrainer {
 
     private SerialPipes serialPipes;
 
-    public ReferenceExtractorTrainer(List<String> featureNames, List<String> replacements)
+    public ReferenceExtractorTrainer(List<String> featureNames, List<String> replacements, List<String> conjunctions)
             throws LangDetectException, IOException {
-        this.serialPipes = this.buildSerialPipes(featureNames, replacements);
+        this.serialPipes = this.buildSerialPipes(featureNames, replacements, conjunctions);
 
         this.crf = new CRF(this.serialPipes, null);
 
@@ -150,9 +150,8 @@ public class ReferenceExtractorTrainer {
         return this.crf;
     }
 
-    // TODO Add configurations (optional with default value)
-    private SerialPipes buildSerialPipes(List<String> featureNames, List<String> replacements)
-            throws LangDetectException, IOException {
+    private SerialPipes buildSerialPipes(List<String> featureNames, List<String> replacements,
+            List<String> conjunctions) throws LangDetectException, IOException {
         ArrayList<Pipe> pipes = new ArrayList<Pipe>();
         pipes.add(new LineGroupString2TokenSequence());
         pipes.add(new AddTargetToLinePipe(6));
@@ -173,12 +172,19 @@ public class ReferenceExtractorTrainer {
         pipes.add(new TokenTextCharSuffix("SUFFIX=", 1));
         pipes.add(new TokenTextCharPrefix("PREFIX=", 1));
 
-        int[][] conjunctions = new int[4][];
-        conjunctions[0] = new int[] { -2 };
-        conjunctions[1] = new int[] { -1 };
-        conjunctions[2] = new int[] { 1 };
-        conjunctions[3] = new int[] { 2 };
-        pipes.add(new OffsetConjunctions(conjunctions));
+        int[][] offsetConjunctions = new int[conjunctions.size()][];
+        for (int i = 0; i < conjunctions.size(); i++) {
+            String conjunction = conjunctions.get(i).replaceAll("min", "-");
+            String[] conjunctionElements = conjunction.split(";");
+            int[] conjunctionArray = new int[conjunctionElements.length];
+            System.out.println("----");
+            for (int j = 0; j < conjunctionElements.length; j++) {
+                System.out.println(Integer.parseInt(conjunctionElements[j]));
+                conjunctionArray[j] = Integer.parseInt(conjunctionElements[j]);
+            }
+            offsetConjunctions[i] = conjunctionArray;
+        }
+        pipes.add(new OffsetConjunctions(offsetConjunctions));
 
         pipes.add(new TokenSequence2FeatureVectorSequence(false, false));
         pipes.add(new Target2LabelSequence());
