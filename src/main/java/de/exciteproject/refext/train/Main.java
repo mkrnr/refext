@@ -54,9 +54,8 @@ public class Main {
             "--model-output-file" }, description = "file in which the trained crf model is saved", required = true, converter = FileConverter.class)
     private File modelFile;
 
-    @Parameter(names = { "-l1",
-            "--l1-weight" }, description = "L1 weight for crf trainer", required = true, converter = FileConverter.class)
-    private int l1Weight = 10;
+    @Parameter(names = { "-gaus", "--gaussian-prior" }, description = "gaussian prior variance for crf trainer")
+    private int gaussianPrior = 10;
 
     @Parameter(names = { "-feat",
             "--features" }, description = "comma separated list of features", variableArity = true, required = true)
@@ -80,12 +79,11 @@ public class Main {
         InstanceList trainingInstances = referenceExtractorTrainer.buildInstanceListFromDir(this.trainingDirectory);
         InstanceList testingInstances = referenceExtractorTrainer.buildInstanceListFromDir(this.testingDirectory);
 
-        // TODO add parameter
-
-        referenceExtractorTrainer.addStartState();
-        referenceExtractorTrainer.addStatesForThreeQuarterLabelsConnectedAsIn(trainingInstances);
-        // referenceExtractorTrainer.setCRFTrainerByLabelLikelihood(10.0);
-        referenceExtractorTrainer.setCRFTrainerByL1LabelLikelihood(this.l1Weight);
+        // TODO add parameters
+        referenceExtractorTrainer.crf.addStartState();
+        referenceExtractorTrainer.crf.addStatesForThreeQuarterLabelsConnectedAsIn(trainingInstances);
+        referenceExtractorTrainer.setCRFTrainerByLabelLikelihood(this.gaussianPrior);
+        // referenceExtractorTrainer.setCRFTrainerByL1LabelLikelihood(this.l1Weight);
         // referenceExtractorTrainer.setCRFTrainerByL1LabelLikelihood(0.75);
 
         CRF crf = referenceExtractorTrainer.train(trainingInstances, testingInstances);

@@ -28,13 +28,12 @@ import cc.mallet.pipe.Target2LabelSequence;
 import cc.mallet.pipe.TokenSequence2FeatureVectorSequence;
 import cc.mallet.pipe.iterator.LineGroupIterator;
 import cc.mallet.pipe.tsf.OffsetConjunctions;
-import cc.mallet.pipe.tsf.TokenTextCharPrefix;
-import cc.mallet.pipe.tsf.TokenTextCharSuffix;
 import cc.mallet.types.InstanceList;
 import de.exciteproject.refext.train.pipe.AddTargetToLinePipe;
 import de.exciteproject.refext.train.pipe.FeaturePipeProvider;
 import de.exciteproject.refext.train.pipe.LineToTargetTextPipe;
 import de.exciteproject.refext.train.pipe.TargetReplacementPipe;
+import de.exciteproject.refext.util.FixedViterbiWriter;
 
 /**
  * Class for training a supervised CRF for extracting reference strings from a
@@ -44,7 +43,7 @@ public class ReferenceExtractorTrainer {
 
     private TransducerTrainer transducerTrainer;
 
-    private CRF crf;
+    public CRF crf;
 
     private SerialPipes serialPipes;
 
@@ -81,18 +80,6 @@ public class ReferenceExtractorTrainer {
         }
         this.crf.getState(startName).setInitialWeight(0.0);
         this.crf.setWeightsDimensionDensely();
-    }
-
-    public void addStartState() {
-        this.crf.addStartState();
-    }
-
-    public void addStatesForLabelsConnectedAsIn(InstanceList trainingInstances) {
-        this.crf.addStatesForLabelsConnectedAsIn(trainingInstances);
-    }
-
-    public void addStatesForThreeQuarterLabelsConnectedAsIn(InstanceList trainingInstances) {
-        this.crf.addStatesForThreeQuarterLabelsConnectedAsIn(trainingInstances);
     }
 
     public InstanceList buildInstanceList(File inputFile) throws FileNotFoundException {
@@ -142,9 +129,8 @@ public class ReferenceExtractorTrainer {
         this.transducerTrainer.addEvaluator(new PerClassAccuracyEvaluator(testingInstances, "testing"));
         this.transducerTrainer.addEvaluator(new TokenAccuracyEvaluator(testingInstances, "testing"));
         // TODO remove
-        // this.transducerTrainer
-        // .addEvaluator(new FixedViterbiWriter(new
-        // File("/home/mkoerner/viterbi.txt"), testingInstances, "test"));
+        this.transducerTrainer
+                .addEvaluator(new FixedViterbiWriter(new File("/home/mkoerner/viterbi.txt"), testingInstances, "test"));
 
         this.transducerTrainer.train(trainingInstances);
         return this.crf;
@@ -162,24 +148,13 @@ public class ReferenceExtractorTrainer {
         for (String featureName : featureNames) {
             pipes.add(featurePipeProvider.getPipe(featureName));
         }
-        // pipes.add(new NamePipe("FIRSTNAME", new File(args[3])));
-        // pipes.add(new NamePipe("LASTNAME", new File(args[4])));
-        // pipes.add(new TokenText());
-        // pipes.add(new TokenTextCharSuffix("C1=", 1));
-        // pipes.add(new TokenTextCharSuffix("C2=", 2));
-        // pipes.add(new TokenTextCharSuffix("C3=", 3));
-
-        pipes.add(new TokenTextCharSuffix("SUFFIX=", 1));
-        pipes.add(new TokenTextCharPrefix("PREFIX=", 1));
 
         int[][] offsetConjunctions = new int[conjunctions.size()][];
         for (int i = 0; i < conjunctions.size(); i++) {
             String conjunction = conjunctions.get(i).replaceAll("min", "-");
             String[] conjunctionElements = conjunction.split(";");
             int[] conjunctionArray = new int[conjunctionElements.length];
-            System.out.println("----");
             for (int j = 0; j < conjunctionElements.length; j++) {
-                System.out.println(Integer.parseInt(conjunctionElements[j]));
                 conjunctionArray[j] = Integer.parseInt(conjunctionElements[j]);
             }
             offsetConjunctions[i] = conjunctionArray;

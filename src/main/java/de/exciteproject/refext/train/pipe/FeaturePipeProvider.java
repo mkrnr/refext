@@ -11,6 +11,9 @@ import java.util.regex.Pattern;
 import com.cybozu.labs.langdetect.LangDetectException;
 
 import cc.mallet.pipe.Pipe;
+import cc.mallet.pipe.tsf.TokenText;
+import cc.mallet.pipe.tsf.TokenTextCharPrefix;
+import cc.mallet.pipe.tsf.TokenTextCharSuffix;
 
 /**
  * Class for generating feature pipes based on regular expressions.
@@ -104,12 +107,19 @@ public class FeaturePipeProvider {
                     countRegexMapEntry.getValue(), this.csvSeparator));
         }
 
+        for (int i = 1; i < 10; i++) {
+            this.featurePipes.put("S" + i, new TokenTextCharSuffix("S" + i + "=", i));
+            this.featurePipes.put("P" + i, new TokenTextCharPrefix("P" + i + "=", i));
+        }
+
         this.featurePipes.put("INDENT", new IndentLayoutPipe("INDENT", this.csvSeparator));
         this.featurePipes.put("GAPABOVE", new GapAboveLayoutPipe("GAPABOVE", this.csvSeparator));
         this.featurePipes.put("SHORTERLINE", new ShorterLinePipe("SHORTERLINE", this.csvSeparator));
         this.featurePipes.put("LANGUAGE", new LanguagePipe("LANGUAGE", this.csvSeparator));
         this.featurePipes.put("REFSEC", new ReferenceSectionPipe("REFSEC", this.csvSeparator));
         this.featurePipes.put("POSINDOC", new PositionInDocumentPipe("POSINDOC", this.csvSeparator));
+        this.featurePipes.put("TOKENTEXT", new TokenText());
+
         // matches tokens where all letters are lower cased
 
         // pipes.add(new RegexMatches("CONTAINSURL",
