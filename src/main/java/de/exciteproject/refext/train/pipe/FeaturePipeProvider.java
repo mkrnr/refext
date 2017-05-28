@@ -48,9 +48,9 @@ public class FeaturePipeProvider {
         tempRegexMap.put("ISNUMBER", "\\d+");
 
         // TODO generalize this
-        tempRegexMap.put("STARTSTABELLE", "(?i)^(Tab\\.|Tabelle).*");
-        tempRegexMap.put("STARTSQUELLE", "(?i)^Quelle.*");
-        tempRegexMap.put("STARTSABBILDUNG", "(?i)^(Abb\\.|Abbildung).*");
+        tempRegexMap.put("STARTSTABELLE", "(Tab\\.|Tabelle).*");
+        tempRegexMap.put("STARTSQUELLE", "Quelle.*");
+        tempRegexMap.put("STARTSABBILDUNG", "(Abb\\.|Abbildung).*");
 
         regexMap = Collections.unmodifiableMap(tempRegexMap);
     }
