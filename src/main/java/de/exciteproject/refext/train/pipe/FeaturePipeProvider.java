@@ -47,6 +47,11 @@ public class FeaturePipeProvider {
         tempRegexMap.put("ENDSCOMMA", ".*,");
         tempRegexMap.put("ISNUMBER", "\\d+");
 
+        // TODO generalize this
+        tempRegexMap.put("STARTSTABLE", "(?i)^(Tab\\.|Tabelle).*");
+        tempRegexMap.put("STARTSQUELLE", "(?i)^Quelle.*");
+        tempRegexMap.put("STARTSABBILDUNG", "(?i)^(Abb\\.|Abbildung).*");
+
         regexMap = Collections.unmodifiableMap(tempRegexMap);
     }
 

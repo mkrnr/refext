@@ -33,7 +33,6 @@ import de.exciteproject.refext.train.pipe.AddTargetToLinePipe;
 import de.exciteproject.refext.train.pipe.FeaturePipeProvider;
 import de.exciteproject.refext.train.pipe.LineToTargetTextPipe;
 import de.exciteproject.refext.train.pipe.TargetReplacementPipe;
-import de.exciteproject.refext.util.FixedViterbiWriter;
 
 /**
  * Class for training a supervised CRF for extracting reference strings from a
@@ -129,8 +128,9 @@ public class ReferenceExtractorTrainer {
         this.transducerTrainer.addEvaluator(new PerClassAccuracyEvaluator(testingInstances, "testing"));
         this.transducerTrainer.addEvaluator(new TokenAccuracyEvaluator(testingInstances, "testing"));
         // TODO remove
-        this.transducerTrainer
-                .addEvaluator(new FixedViterbiWriter(new File("/home/mkoerner/viterbi.txt"), testingInstances, "test"));
+        // this.transducerTrainer
+        // .addEvaluator(new FixedViterbiWriter(new
+        // File("/home/mkoerner/viterbi.txt"), testingInstances, "test"));
 
         this.transducerTrainer.train(trainingInstances);
         return this.crf;
