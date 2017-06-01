@@ -86,9 +86,8 @@ public class Example {
         ReferenceExtractor referenceExtractor = new ReferenceExtractor(new File(args[0]));
         List<String> references = referenceExtractor.extractReferencesFromPdf(
                 new File(args[1]));
-        List<BibEntry> bibEntries = referenceExtractor.extractBibEntriesFromReferences(references);
-        for (BibEntry bibEntry : bibEntries) {
-            System.out.println(bibEntry.toBibTeX());
+        for (String reference : references) {
+            System.out.println(reference);
         }
     }
 }
