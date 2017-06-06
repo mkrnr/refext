@@ -10,11 +10,11 @@ import java.util.regex.Pattern;
 
 import cc.mallet.fst.CRF;
 import cc.mallet.pipe.Pipe;
-import cc.mallet.pipe.iterator.LineGroupIterator;
 import cc.mallet.types.Instance;
 import cc.mallet.types.InstanceList;
 import cc.mallet.types.Sequence;
 import cc.mallet.util.FileUtils;
+import de.exciteproject.refext.train.LineGroupIterator;
 import de.exciteproject.refext.train.ReferenceExtractorTrainer;
 import pl.edu.icm.cermine.exception.AnalysisException;
 
@@ -37,8 +37,7 @@ public class CrfReferenceLineAnnotator {
 
         StringBuilder lineStringBuilder = new StringBuilder();
         for (String line : linesWithLayout) {
-            lineStringBuilder.append(line).append("\n");
-
+            lineStringBuilder.append(line).append(System.lineSeparator());
         }
         BufferedReader lineReader = new BufferedReader(new StringReader(lineStringBuilder.toString()));
 

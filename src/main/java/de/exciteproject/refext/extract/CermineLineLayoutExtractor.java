@@ -59,23 +59,15 @@ public class CermineLineLayoutExtractor extends CermineLineExtractor {
                 continue;
             }
 
-            File currentOutputDirectory;
-
-            String subDirectories = inputFile.getParentFile().getAbsolutePath().replaceFirst(inputDir.getAbsolutePath(),
-                    "");
-            currentOutputDirectory = new File(outputDir.getAbsolutePath() + File.separator + subDirectories);
 
             String outputFileName = FilenameUtils.removeExtension(inputFile.getName()) + ".csv";
-            File outputFile = new File(currentOutputDirectory.getAbsolutePath() + File.separator + outputFileName);
+            File outputFile = new File(outputDir.getAbsolutePath() + File.separator + outputFileName);
 
             // skip computation if outputFile already exists
             if (outputFile.exists()) {
                 continue;
             }
 
-            if (!currentOutputDirectory.exists()) {
-                currentOutputDirectory.mkdirs();
-            }
             List<String> lines = cermineLineLayoutExtractor.extract(inputFile);
             BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(outputFile));
             for (String line : lines) {

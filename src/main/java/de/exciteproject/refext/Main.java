@@ -69,16 +69,6 @@ public class Main {
             "--output-directory" }, description = "Directory to store the output", required = true, converter = FileConverter.class)
     private File outputDir;
 
-    private File getOutputFile(File inputFile, String inputDirectoryPath) {
-        String subDirectories = inputFile.getParentFile().getAbsolutePath().replaceFirst(inputDirectoryPath, "");
-        File currentOutputDirectory = new File(this.outputDir.getAbsolutePath() + File.separator + subDirectories);
-
-        String outputFileName = FilenameUtils.removeExtension(inputFile.getName());
-        outputFileName += ".txt";
-
-        File outputFile = new File(currentOutputDirectory.getAbsolutePath() + File.separator + outputFileName);
-        return outputFile;
-    }
 
     private void run() throws AnalysisException, IOException {
         if (((this.pdfFile == null) && (this.layoutFile == null))
@@ -93,23 +83,22 @@ public class Main {
         ReferenceExtractor referenceExtractor = new ReferenceExtractor(this.crfModelFile);
 
         List<File> inputFiles = new ArrayList<File>();
-        String inputDirectoryPath = null;
 
         if (this.pdfFile != null) {
             inputFiles = FileUtils.asList(this.pdfFile);
-            inputDirectoryPath = FileUtils.getDirctory(this.pdfFile).getAbsolutePath();
-
         } else {
             if (this.layoutFile != null) {
                 inputFiles = FileUtils.asList(this.layoutFile);
-                inputDirectoryPath = FileUtils.getDirctory(this.layoutFile).getAbsolutePath();
             }
         }
 
         for (File inputFile : inputFiles) {
             System.out.println("processing: " + inputFile);
 
-            File outputFile = this.getOutputFile(inputFile, inputDirectoryPath);
+            String outputFileName = FilenameUtils.removeExtension(inputFile.getName());
+            outputFileName += ".txt";
+
+            File outputFile = new File(this.outputDir.getAbsolutePath() + File.separator + outputFileName);
 
             // skip if outputFile already exists
             if (this.skipIfOutputExists && outputFile.exists()) {
