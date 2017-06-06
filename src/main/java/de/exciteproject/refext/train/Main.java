@@ -42,34 +42,41 @@ public class Main {
     @Parameter(names = { "-h", "--help" }, description = "print information about available parameters")
     private boolean help;
 
-    @Parameter(names = { "-test",
-            "--testing-dir" }, description = "directory containing files where each line corresponds to the output ormat of CermineLineLayoutExtractor including XML tags ", required = true, converter = FileConverter.class)
-    private File testingDirectory;
-
     @Parameter(names = { "-train",
             "--training-dir" }, description = "directory containing files where each line corresponds to the output ormat of CermineLineLayoutExtractor including XML tags ", required = true, converter = FileConverter.class)
     private File trainingDirectory;
+
+    @Parameter(names = { "-test",
+            "--testing-dir" }, description = "directory containing files where each line corresponds to the output ormat of CermineLineLayoutExtractor including XML tags ", required = true, converter = FileConverter.class)
+    private File testingDirectory;
 
     @Parameter(names = { "-model",
             "--model-output-file" }, description = "file in which the trained crf model is saved", required = true, converter = FileConverter.class)
     private File modelFile;
 
-    @Parameter(names = { "-gaus", "--gaussian-prior" }, description = "gaussian prior variance for crf trainer")
-    private int gaussianPrior = 10;
+    @Parameter(names = { "-weight",
+            "--trainer-weight" }, description = "weight for crf trainer, depending which trainer is used")
+    private double trainerWeight = 10.0;
 
     @Parameter(names = { "-feat",
             "--features" }, description = "comma separated list of features", variableArity = true, required = true)
     private List<String> featureNames;
 
     @Parameter(names = { "-replace",
-            "--replacements" }, description = "comma separated list of values to replace", variableArity = true, required = false)
+            "--replacements" }, description = "comma separated list of values to replace", variableArity = true)
     private List<String> replacements;
 
     @Parameter(names = { "-conjunc",
-            "--conjunctions" }, description = "comma separated list of cunjunctions that are separated by semicolons. \"min\" is used instead of the minus sign", variableArity = true, required = false)
+            "--conjunctions" }, description = "comma separated list of cunjunctions that are separated by semicolons. \"min\" is used instead of the minus sign", variableArity = true)
     private List<String> conjunctions;
 
-    // TODO Add configurations (optional with default value)
+    @Parameter(names = { "-states",
+            "--add-states-name" }, description = "string that specifies which states should be added.")
+    private String addStatesName = "ThreeQuarterLabels";
+
+    @Parameter(names = { "-trainer",
+            "--trainer-name" }, description = "string that specifies which states should be added.")
+    private String trainerName = "ByL1LabelLikelihood";
 
     public void run() throws FileNotFoundException, IOException, LangDetectException {
 
@@ -79,12 +86,30 @@ public class Main {
         InstanceList trainingInstances = referenceExtractorTrainer.buildInstanceListFromDir(this.trainingDirectory);
         InstanceList testingInstances = referenceExtractorTrainer.buildInstanceListFromDir(this.testingDirectory);
 
-        // TODO add parameters
         referenceExtractorTrainer.crf.addStartState();
-        referenceExtractorTrainer.crf.addStatesForThreeQuarterLabelsConnectedAsIn(trainingInstances);
-        referenceExtractorTrainer.setCRFTrainerByLabelLikelihood(this.gaussianPrior);
-        // referenceExtractorTrainer.setCRFTrainerByL1LabelLikelihood(this.l1Weight);
-        // referenceExtractorTrainer.setCRFTrainerByL1LabelLikelihood(0.75);
+        switch (this.addStatesName) {
+        case "ThreeQuarterLabels":
+            referenceExtractorTrainer.crf.addStatesForThreeQuarterLabelsConnectedAsIn(trainingInstances);
+            break;
+        case "BiLabels":
+            referenceExtractorTrainer.crf.addStatesForBiLabelsConnectedAsIn(trainingInstances);
+            break;
+        case "Labels":
+            referenceExtractorTrainer.crf.addStatesForLabelsConnectedAsIn(trainingInstances);
+            break;
+        case "HalfLabels":
+            referenceExtractorTrainer.crf.addStatesForHalfLabelsConnectedAsIn(trainingInstances);
+            break;
+        }
+
+        switch (this.trainerName) {
+        case "ByLabelLikelihood":
+            referenceExtractorTrainer.setCRFTrainerByLabelLikelihood(this.trainerWeight);
+            break;
+        case "ByL1LabelLikelihood":
+            referenceExtractorTrainer.setCRFTrainerByL1LabelLikelihood(this.trainerWeight);
+            break;
+        }
 
         CRF crf = referenceExtractorTrainer.train(trainingInstances, testingInstances);
         crf.write(this.modelFile);

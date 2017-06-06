@@ -93,17 +93,22 @@ public class Example {
 }
 ```
 
+Here, `args[0]` is a path to the trained CRF file and `args[1]` is a path to a PDF file from which the references should be extracted.
+
 ## Training New Models
 Training a new supervised CRF model consists of the following steps:
 
-1. Extract text lines from a PDF using [CermineLineExtractor](src/main/java/de/exciteproject/refext/extract/CermineLineExtractor.java).
-2. Annotate lines that belong to a reference string with the following XML tags:
+1. Generate layout CSV files from given PDFs using [CermineLineLayoutExtractor](src/main/java/de/exciteproject/refext/extract/CermineLineLayoutExtractor.java).
+2. Generate pre-annotated text from the layout files using [TrainingDataAnnotator](src/main/java/de/exciteproject/refext/train/TrainingDataAnnotator.java).
+3. Correct the annotated lines that belong to a reference string with the following XML tags:
     * `<ref>`: at the beginning of the first line of a reference string
     * `</ref>`: at the end of the last line of a reference string
     * `<oth>`: at the beginning of the first line of information that is appears in a reference string but which does not belong to it. For example, page numbers, headers, or footers when a reference string spans two pages
     * `</oth>`: at the end of the last line of other information inside a reference string
-3. Extract text lines and layout information from the same PDF using [CermineLineLayoutExtractor](src/main/java/de/exciteproject/refext/extract/CermineLineLayoutExtractor.java).
-4. Merge the two files using [LabelLayoutMerger](src/main/java/de/exciteproject/refext/preproc/LabelLayoutMerger.java).
-    * In some rare cases, the two files to not have the same number of rows. In such cases, [CERMINE](https://github.com/CeON/CERMINE) produces different outputs when running the same analysis on the same PDF multiple times. In such cases, a merging is not possible. Further work is needed to prevent or handle such cases.
-5. Add multiple of such merged files to a single text document, for example using unix tools such as `cat` in combination with `find`: `find * -type f -exec cat {} + > train.txt`
-6. Use such files as training and testing files for [SupervisedCrfTrainer](src/main/java/de/exciteproject/refext/train/SupervisedCrfTrainer.java).
+    * **Important**: Do not delete or add any lines. Otherwise, the next step will fail.
+4. Merge the layout files and the annotated files using [LabelLayoutMerger](src/main/java/de/exciteproject/refext/preproc/LabelLayoutMerger.java).
+    * The two files are merged based on their line numbers. Thereby, both documents need to have the same number of lines and each line in one document needs to correspond to the same text as the line with the same line number in the other document.
+6. Run the [Main.java](src/main/java/de/exciteproject/refext/train/Main.java) class for training.
+	* `-train` and `-test` can point to the same directory. This way, the trained model will be evaluated on the same data as it was trained on.
+	* `-model` is the file in which the trained model will be saved
+
