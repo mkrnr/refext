@@ -111,4 +111,6 @@ Training a new supervised CRF model consists of the following steps:
 6. Run the [Main.java](src/main/java/de/exciteproject/refext/train/Main.java) class for training.
 	* `-train` and `-test` can point to the same directory. This way, the trained model will be evaluated on the same data as it was trained on.
 	* `-model` is the file in which the trained model will be saved
-
+	* `-feat` is a list of comma-separated features. See also (src/main/java/de/exciteproject/refext/train/pipe/FeaturePipeProvider.java)
+	* A number of optional parameters for configuring the training of the crf model
+	* `-h` for a list of all possible parameters, including the parameters for configuring the training of the crf model

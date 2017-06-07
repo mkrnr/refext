@@ -3,6 +3,7 @@ package de.exciteproject.refext.train;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.beust.jcommander.JCommander;
@@ -68,7 +69,7 @@ public class Main {
 
     @Parameter(names = { "-conjunc",
             "--conjunctions" }, description = "comma separated list of cunjunctions that are separated by semicolons. \"min\" is used instead of the minus sign", variableArity = true)
-    private List<String> conjunctions;
+    private List<String> conjunctions = new ArrayList<String>();
 
     @Parameter(names = { "-states",
             "--add-states-name" }, description = "string that specifies which states should be added.")
@@ -79,6 +80,16 @@ public class Main {
     private String trainerName = "ByL1LabelLikelihood";
 
     public void run() throws FileNotFoundException, IOException, LangDetectException {
+
+        // add default conjunctions if empty
+        if (this.conjunctions.isEmpty()) {
+            this.conjunctions.add("min2;min1");
+            this.conjunctions.add("min2");
+            this.conjunctions.add("min1");
+            this.conjunctions.add("1");
+            this.conjunctions.add("2");
+            this.conjunctions.add("1;2");
+        }
 
         ReferenceExtractorTrainer referenceExtractorTrainer = new ReferenceExtractorTrainer(this.featureNames,
                 this.replacements, this.conjunctions);
