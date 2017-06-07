@@ -113,11 +113,6 @@
       <version>4.1</version>
     </dependency>
     <dependency>
-      <groupId>net.sf.py4j</groupId>
-      <artifactId>py4j</artifactId>
-      <version>0.10.4</version>
-    </dependency>
-    <dependency>
       <groupId>com.beust</groupId>
       <artifactId>jcommander</artifactId>
       <version>1.58</version>
