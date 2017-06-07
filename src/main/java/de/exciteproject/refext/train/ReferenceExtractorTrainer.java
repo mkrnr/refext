@@ -26,7 +26,6 @@ import cc.mallet.pipe.Pipe;
 import cc.mallet.pipe.SerialPipes;
 import cc.mallet.pipe.Target2LabelSequence;
 import cc.mallet.pipe.TokenSequence2FeatureVectorSequence;
-import cc.mallet.pipe.iterator.LineGroupIterator;
 import cc.mallet.pipe.tsf.OffsetConjunctions;
 import cc.mallet.types.InstanceList;
 import de.exciteproject.refext.train.pipe.AddTargetToLinePipe;
