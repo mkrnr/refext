@@ -1,4 +1,4 @@
-package de.exciteproject.refext;
+package de.exciteproject.refext.io;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -16,6 +16,7 @@ import com.beust.jcommander.ParameterException;
 import com.beust.jcommander.converters.FileConverter;
 import com.google.gson.Gson;
 
+import de.exciteproject.refext.ReferenceExtractor;
 import pl.edu.icm.cermine.exception.AnalysisException;
 
 /**
