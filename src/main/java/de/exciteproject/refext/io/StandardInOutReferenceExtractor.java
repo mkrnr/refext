@@ -8,8 +8,6 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.io.FilenameUtils;
-
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.ParameterException;
@@ -22,10 +20,10 @@ import pl.edu.icm.cermine.exception.AnalysisException;
 /**
  * Class that listens to inline JSON specifying the files to process
  */
-public class StandardInOutExtractor {
+public class StandardInOutReferenceExtractor {
 
     public static void main(String[] args) throws IOException, AnalysisException {
-        StandardInOutExtractor standardInOutExtractor = new StandardInOutExtractor();
+        StandardInOutReferenceExtractor standardInOutExtractor = new StandardInOutReferenceExtractor();
 
         JCommander jCommander = null;
         try {
@@ -45,9 +43,6 @@ public class StandardInOutExtractor {
     @Parameter(names = { "-h", "--help" }, description = "print information about available parameters", help = true)
     private boolean help;
 
-    @Parameter(names = { "-sizeLimit", "--pdf-file-size-limit" }, description = "limit in byte for pdf files")
-    private long pdfFileSizeLimit = 10000000;
-
     @Parameter(names = { "-crfModel",
             "--crf-model-path" }, description = "File containing a CRF model (see SupervisedCrfTrainer)", required = true, converter = FileConverter.class)
     private File crfModelFile;
@@ -66,31 +61,19 @@ public class StandardInOutExtractor {
 
             Gson gson = new Gson();
 
-            ExtractorJsonInput extractorJsonInput = gson.fromJson(line, ExtractorJsonInput.class);
-            // System.out.println("input : " + line);
-            // System.out.println("file: " + extractorJsonInput.inputFilePath);
-            // System.out.println("layout: " + extractorJsonInput.isLayoutFile);
-            // System.out.println("pdf: " + extractorJsonInput.isPdfFile);
-            // System.out.println("-----------\n");
+            ReferenceExtractorJsonInput referenceExtractorJsonInput = gson.fromJson(line,
+                    ReferenceExtractorJsonInput.class);
 
-            if (extractorJsonInput.isLayoutFile == extractorJsonInput.isPdfFile) {
-                System.err.println("Wrong input: either set isPdfFile or isLayoutFile to true");
-                continue;
-            }
-            File inputFile = new File(extractorJsonInput.inputFilePath);
+            File inputFile = new File(referenceExtractorJsonInput.inputFilePath);
             List<String> references = new ArrayList<String>();
-            if (extractorJsonInput.isLayoutFile) {
-                references = referenceExtractor.extractReferencesFromLayoutFile(inputFile, Charset.defaultCharset());
-            }
-            if (extractorJsonInput.isPdfFile) {
-                references = referenceExtractor.extractReferencesFromPdf(inputFile);
-            }
 
-            String inputFileBaseName = FilenameUtils.getBaseName(inputFile.getName());
-            for (String reference : references) {
-                // TODO output as json?
-                System.out.println(inputFileBaseName + "\t" + reference);
-            }
+            references = referenceExtractor.extractReferencesFromLayoutFile(inputFile, Charset.defaultCharset());
+
+            ReferenceExtractorJsonOutput referenceExtractorJsonOutput = new ReferenceExtractorJsonOutput();
+            referenceExtractorJsonOutput.inputFilePath = referenceExtractorJsonInput.inputFilePath;
+            referenceExtractorJsonOutput.references = references;
+            System.out.println(gson.toJson(referenceExtractorJsonOutput));
         }
+        bufferedReader.close();
     }
 }
