@@ -30,12 +30,12 @@ public class TrainingDataAnnotator {
         }
         TrainingDataAnnotator trainingDataAnnotator = new TrainingDataAnnotator(crfModelFile);
         List<File> inputFiles = FileUtils.asList(inputDir);
-        
+
         for (File inputFile : inputFiles) {
-            String subDirectories = inputFile.getParentFile().getAbsolutePath().replace("\\", "/").replaceFirst(inputDir.getAbsolutePath().replace("\\", "/"),
-              "");
+            String subDirectories = inputFile.getParentFile().getAbsolutePath().replace("\\", "/")
+                    .replaceFirst(inputDir.getAbsolutePath().replace("\\", "/"), "");
             File currentOutputDirectory = new File(outputDir.getAbsolutePath() + File.separator + subDirectories);
-               
+
             String outputFileName = FilenameUtils.removeExtension(inputFile.getName()) + ".csv";
             File outputFile = new File(currentOutputDirectory + File.separator + outputFileName);
 
