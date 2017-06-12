@@ -63,12 +63,10 @@ public class CermineLineExtractor {
                 continue;
             }
             System.out.println("processing: " + inputFile);
-
-            File currentOutputDirectory;
             
             String subDirectories = inputFile.getParentFile().getAbsolutePath().replace("\\", "/").replaceFirst(inputDir.getAbsolutePath().replace("\\", "/"),
             		"");
-            currentOutputDirectory = new File(outputDir.getAbsolutePath() + File.separator + subDirectories);
+            File currentOutputDirectory = new File(outputDir.getAbsolutePath() + File.separator + subDirectories);
 
 
             String outputFileName = FilenameUtils.removeExtension(inputFile.getName()) + ".txt";

@@ -30,19 +30,23 @@ public class TrainingDataAnnotator {
         }
         TrainingDataAnnotator trainingDataAnnotator = new TrainingDataAnnotator(crfModelFile);
         List<File> inputFiles = FileUtils.asList(inputDir);
-        String inputDirectoryPath = FileUtils.getDirctory(inputDir).getAbsolutePath();
-
+        
         for (File inputFile : inputFiles) {
-            String inputFileSubPath = inputFile.getAbsolutePath().replace("\\", "/").replaceAll(inputDirectoryPath.replace("\\", "/"), "");
+            String subDirectories = inputFile.getParentFile().getAbsolutePath().replace("\\", "/").replaceFirst(inputDir.getAbsolutePath().replace("\\", "/"),
+              "");
+            File currentOutputDirectory = new File(outputDir.getAbsolutePath() + File.separator + subDirectories);
+               
+            String outputFileName = FilenameUtils.removeExtension(inputFile.getName()) + ".csv";
+            File outputFile = new File(currentOutputDirectory + File.separator + outputFileName);
 
-            inputFileSubPath = FilenameUtils.removeExtension(inputFileSubPath)+".xml";
-            File outputFile = new File(outputDir + inputFileSubPath);
+            // skip computation if outputFile already exists
             if (outputFile.exists()) {
                 continue;
             }
-            if(!outputFile.getParentFile().exists()){
-	            outputFile.getParentFile().mkdirs();
+            if (!currentOutputDirectory.exists()) {
+                currentOutputDirectory.mkdirs();
             }
+
             List<String> annotatedText = trainingDataAnnotator.annotateText(inputFile);
             Files.write(Paths.get(outputFile.getAbsolutePath()), annotatedText, Charset.defaultCharset());
         }
