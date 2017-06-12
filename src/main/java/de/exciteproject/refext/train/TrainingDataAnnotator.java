@@ -40,7 +40,9 @@ public class TrainingDataAnnotator {
             if (outputFile.exists()) {
                 continue;
             }
-
+            if(!outputFile.getParentFile().exists()){
+	            outputFile.getParentFile().mkdirs();
+            }
             List<String> annotatedText = trainingDataAnnotator.annotateText(inputFile);
             Files.write(Paths.get(outputFile.getAbsolutePath()), annotatedText, Charset.defaultCharset());
         }
