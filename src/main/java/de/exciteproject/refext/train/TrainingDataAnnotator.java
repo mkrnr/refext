@@ -8,7 +8,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.exciteproject.refext.extract.CrfReferenceLineAnnotator;
+import de.exciteproject.refext.ReferenceExtractor;
 import de.exciteproject.refext.util.FileUtils;
 import pl.edu.icm.cermine.exception.AnalysisException;
 
@@ -44,16 +44,15 @@ public class TrainingDataAnnotator {
         }
     }
 
-    private CrfReferenceLineAnnotator crfReferenceLineAnnotator;
+    private ReferenceExtractor referenceExtractor;
 
     public TrainingDataAnnotator(File crfModelFile) throws AnalysisException {
-        this.crfReferenceLineAnnotator = new CrfReferenceLineAnnotator(crfModelFile);
+        this.referenceExtractor = new ReferenceExtractor(crfModelFile);
     }
 
     public List<String> annotateText(File layoutFile) throws IOException, AnalysisException {
-        List<String> layoutLines = org.apache.commons.io.FileUtils.readLines(layoutFile, Charset.defaultCharset());
-
-        List<String> annotatedLines = this.crfReferenceLineAnnotator.annotate(layoutLines);
+        List<String> annotatedLines = this.referenceExtractor.extractReferencesFromLayoutFile(layoutFile,
+                Charset.defaultCharset());
 
         List<String> xmlAnnotatedLines = new ArrayList<String>();
         for (int i = 0; i < annotatedLines.size(); i++) {

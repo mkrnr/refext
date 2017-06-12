@@ -9,7 +9,10 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 import cc.mallet.fst.CRF;
+import cc.mallet.fst.SumLatticeDefault;
+import cc.mallet.fst.Transducer.State;
 import cc.mallet.pipe.Pipe;
+import cc.mallet.types.Alphabet;
 import cc.mallet.types.Instance;
 import cc.mallet.types.InstanceList;
 import cc.mallet.types.Sequence;
@@ -33,7 +36,7 @@ public class CrfReferenceLineAnnotator {
         this.pipe = this.crf.getInputPipe();
     }
 
-    public List<String> annotate(List<String> linesWithLayout) throws IOException, AnalysisException {
+    public List<ReferenceLineAnnotation> annotate(List<String> linesWithLayout) throws IOException, AnalysisException {
 
         StringBuilder lineStringBuilder = new StringBuilder();
         for (String line : linesWithLayout) {
@@ -45,25 +48,29 @@ public class CrfReferenceLineAnnotator {
         inputInstances.addThruPipe(new LineGroupIterator(lineReader, Pattern.compile("^\\s*$"), true));
         lineReader.close();
 
-        // CRFTrainerByLabelLikelihood trainer = new
-        // CRFTrainerByLabelLikelihood(this.crf);
-        // trainer.setUseSparseWeights(false);
-
-        List<String> annotatedLines = new ArrayList<String>();
+        List<ReferenceLineAnnotation> referenceLineAnnotations = new ArrayList<ReferenceLineAnnotation>();
 
         for (Instance instance : inputInstances) {
             @SuppressWarnings("unchecked")
-            Sequence<String> output = this.crf.transduce((Sequence<String>) instance.getData());
-            for (int i = 0; i < output.size(); i++) {
-                // annotatedLines.add(output.get(i).toString() + "\t" +
-                // linesWithLayout.get(i).split("\t")[0]);
-                String[] layoutLineSplit = linesWithLayout.get(i).split("\t");
-                if (layoutLineSplit.length > 0) {
-                    annotatedLines.add(output.get(i).toString() + "\t" + layoutLineSplit[0]);
+            Sequence<String> inputSequence = (Sequence<String>) instance.getData();
+            SumLatticeDefault latticeDefault = new SumLatticeDefault(this.crf, inputSequence);
+            Alphabet outputAlphabet = this.crf.getOutputAlphabet();
+            System.out.println(linesWithLayout.size());
+            if (linesWithLayout.size() != inputSequence.size()) {
+                throw new IllegalStateException("linesWithLayout.size()!=inputSequence.size()");
+            }
+            for (int i = 0; i < inputSequence.size(); i++) {
+                ReferenceLineAnnotation referenceLineAnnotation = new ReferenceLineAnnotation(
+                        linesWithLayout.get(i).split("\\t")[0]);
+                for (int j = 1; j <= outputAlphabet.size(); j++) {
+                    State state = this.crf.getState(j);
+                    referenceLineAnnotation.addAnnotation(state.getName(),
+                            latticeDefault.getGammaProbability(i + 1, state));
                 }
+                referenceLineAnnotations.add(referenceLineAnnotation);
             }
         }
-        return annotatedLines;
+        return referenceLineAnnotations;
     }
 
 }

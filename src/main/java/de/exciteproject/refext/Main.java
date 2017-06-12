@@ -14,7 +14,10 @@ import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.ParameterException;
 import com.beust.jcommander.converters.FileConverter;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
+import de.exciteproject.refext.extract.ReferenceLineAnnotation;
 import de.exciteproject.refext.train.ReferenceExtractorTrainer;
 import de.exciteproject.refext.util.FileUtils;
 import pl.edu.icm.cermine.exception.AnalysisException;
@@ -50,6 +53,10 @@ public class Main {
             "--skip-existing-ouput-files" }, description = "will skip files for which there is already an output file")
     private boolean skipIfOutputExists = false;
 
+    @Parameter(names = { "-annotations",
+            "--getAnnotations" }, description = "creates a json file containing annotations and confidence values for each possible label")
+    private boolean getAnnotations = false;
+
     @Parameter(names = { "-sizeLimit", "--pdf-file-size-limit" }, description = "limit in byte for pdf files")
     private long pdfFileSizeLimit = 10000000;
 
@@ -68,7 +75,6 @@ public class Main {
     @Parameter(names = { "-outputDir",
             "--output-directory" }, description = "Directory to store the output", required = true, converter = FileConverter.class)
     private File outputDir;
-
 
     private void run() throws AnalysisException, IOException {
         if (((this.pdfFile == null) && (this.layoutFile == null))
@@ -96,7 +102,11 @@ public class Main {
             System.out.println("processing: " + inputFile);
 
             String outputFileName = FilenameUtils.removeExtension(inputFile.getName());
-            outputFileName += ".txt";
+            if (this.getAnnotations) {
+                outputFileName += ".json";
+            } else {
+                outputFileName += ".txt";
+            }
 
             File outputFile = new File(this.outputDir.getAbsolutePath() + File.separator + outputFileName);
 
@@ -105,28 +115,61 @@ public class Main {
                 continue;
             }
 
-            List<String> referenceStrings = new ArrayList<String>();
-            if (this.pdfFile != null) {
-                // skip files that are larger than pdfFileSizeLimit
-                if (inputFile.length() > this.pdfFileSizeLimit) {
-                    continue;
-                }
+            if (this.getAnnotations) {
+                List<ReferenceLineAnnotation> referenceLineAnnotations = new ArrayList<ReferenceLineAnnotation>();
+                if (this.pdfFile != null) {
+                    // skip files that are larger than pdfFileSizeLimit
+                    if (inputFile.length() > this.pdfFileSizeLimit) {
+                        continue;
+                    }
 
-                referenceStrings = referenceExtractor.extractReferencesFromPdf(inputFile);
+                    referenceLineAnnotations = referenceExtractor.annotateLinesFromPdfFile(inputFile);
+                } else {
+                    if (this.layoutFile != null) {
+                        referenceLineAnnotations = referenceExtractor.annotateLinesFromLayoutFile(inputFile,
+                                Charset.defaultCharset());
+                    }
+                }
+                this.writeAnnotatedReferenceLines(referenceLineAnnotations, outputFile);
+
             } else {
-                if (this.layoutFile != null) {
-                    referenceStrings = referenceExtractor.extractReferencesFromLayoutFile(inputFile,
-                            Charset.defaultCharset());
+                List<String> referenceStrings = new ArrayList<String>();
+                if (this.pdfFile != null) {
+                    // skip files that are larger than pdfFileSizeLimit
+                    if (inputFile.length() > this.pdfFileSizeLimit) {
+                        continue;
+                    }
+
+                    referenceStrings = referenceExtractor.extractReferencesFromPdf(inputFile);
+                } else {
+                    if (this.layoutFile != null) {
+                        referenceStrings = referenceExtractor.extractReferencesFromLayoutFile(inputFile,
+                                Charset.defaultCharset());
+                    }
                 }
-            }
-            BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(outputFile));
 
-            for (String referenceString : referenceStrings) {
-                bufferedWriter.write(referenceString);
-                bufferedWriter.newLine();
+                this.writeReferenceStrings(referenceStrings, outputFile);
             }
-
-            bufferedWriter.close();
         }
+    }
+
+    private void writeAnnotatedReferenceLines(List<ReferenceLineAnnotation> referenceLineAnnotations, File outputFile)
+            throws IOException {
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        org.apache.commons.io.FileUtils.writeStringToFile(outputFile, gson.toJson(referenceLineAnnotations),
+                Charset.defaultCharset());
+
+    }
+
+    private void writeReferenceStrings(List<String> referenceStrings, File outputFile) throws IOException {
+
+        BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(outputFile));
+
+        for (String referenceString : referenceStrings) {
+            bufferedWriter.write(referenceString);
+            bufferedWriter.newLine();
+        }
+
+        bufferedWriter.close();
     }
 }
