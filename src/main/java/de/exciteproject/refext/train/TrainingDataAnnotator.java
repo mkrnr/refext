@@ -8,7 +8,10 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.io.FilenameUtils;
+
 import de.exciteproject.refext.ReferenceExtractor;
+import de.exciteproject.refext.extract.ReferenceLineAnnotation;
 import de.exciteproject.refext.util.FileUtils;
 import pl.edu.icm.cermine.exception.AnalysisException;
 
@@ -32,8 +35,7 @@ public class TrainingDataAnnotator {
         for (File inputFile : inputFiles) {
             String inputFileSubPath = inputFile.getAbsolutePath().replace("\\", "/").replaceAll(inputDirectoryPath.replace("\\", "/"), "");
 
-            // TODO make this more pretty
-            inputFileSubPath = inputFileSubPath.replaceAll(".csv$", ".xml");
+            inputFileSubPath = FilenameUtils.removeExtension(inputFileSubPath)+".xml";
             File outputFile = new File(outputDir + inputFileSubPath);
             if (outputFile.exists()) {
                 continue;
@@ -51,7 +53,7 @@ public class TrainingDataAnnotator {
     }
 
     public List<String> annotateText(File layoutFile) throws IOException, AnalysisException {
-        List<String> annotatedLines = this.referenceExtractor.extractReferencesFromLayoutFile(layoutFile,
+        List<ReferenceLineAnnotation> annotatedLines = this.referenceExtractor.annotateLinesFromLayoutFile(layoutFile,
                 Charset.defaultCharset());
 
         List<String> xmlAnnotatedLines = new ArrayList<String>();
@@ -86,21 +88,19 @@ public class TrainingDataAnnotator {
         return xmlAnnotatedLines;
     }
 
-    private String getAnnotation(List<String> annotatedLines, int index) {
+    private String getAnnotation(List<ReferenceLineAnnotation> annotatedLines, int index) {
         if (annotatedLines.size() <= index) {
             return "";
         } else {
-            String[] lineSplit = annotatedLines.get(index).split("\\t");
-            return lineSplit[0];
+            return annotatedLines.get(index).getBestAnnotation();
         }
     }
 
-    private String getLine(List<String> annotatedLines, int index) {
+    private String getLine(List<ReferenceLineAnnotation> annotatedLines, int index) {
         if (annotatedLines.size() <= index) {
             return "";
         } else {
-            String[] lineSplit = annotatedLines.get(index).split("\\t");
-            return lineSplit[1];
+            return annotatedLines.get(index).getLine();
         }
     }
 }

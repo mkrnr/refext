@@ -55,7 +55,6 @@ public class CrfReferenceLineAnnotator {
             Sequence<String> inputSequence = (Sequence<String>) instance.getData();
             SumLatticeDefault latticeDefault = new SumLatticeDefault(this.crf, inputSequence);
             Alphabet outputAlphabet = this.crf.getOutputAlphabet();
-            System.out.println(linesWithLayout.size());
             if (linesWithLayout.size() != inputSequence.size()) {
                 throw new IllegalStateException("linesWithLayout.size()!=inputSequence.size()");
             }
