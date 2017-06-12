@@ -36,6 +36,7 @@ public class CermineLineExtractor {
      *            pdf files </br>
      *            args[1]: directory in which the outputfiles are stored,
      *            including the subdirectories
+     *            args[2]: define a limitation for sizes of input files
      *
      * @throws IOException
      * @throws AnalysisException
@@ -64,10 +65,11 @@ public class CermineLineExtractor {
             System.out.println("processing: " + inputFile);
 
             File currentOutputDirectory;
-
-            String subDirectories = inputFile.getParentFile().getAbsolutePath().replaceFirst(inputDir.getAbsolutePath(),
-                    "");
+            
+            String subDirectories = inputFile.getParentFile().getAbsolutePath().replace("\\", "/").replaceFirst(inputDir.getAbsolutePath().replace("\\", "/"),
+            		"");
             currentOutputDirectory = new File(outputDir.getAbsolutePath() + File.separator + subDirectories);
+
 
             String outputFileName = FilenameUtils.removeExtension(inputFile.getName()) + ".txt";
             File outputFile = new File(currentOutputDirectory.getAbsolutePath() + File.separator + outputFileName);

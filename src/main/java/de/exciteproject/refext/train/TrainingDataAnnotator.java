@@ -30,7 +30,7 @@ public class TrainingDataAnnotator {
         String inputDirectoryPath = FileUtils.getDirctory(inputDir).getAbsolutePath();
 
         for (File inputFile : inputFiles) {
-            String inputFileSubPath = inputFile.getAbsolutePath().replaceAll(inputDirectoryPath, "");
+            String inputFileSubPath = inputFile.getAbsolutePath().replace("\\", "/").replaceAll(inputDirectoryPath.replace("\\", "/"), "");
 
             // TODO make this more pretty
             inputFileSubPath = inputFileSubPath.replaceAll(".csv$", ".xml");
