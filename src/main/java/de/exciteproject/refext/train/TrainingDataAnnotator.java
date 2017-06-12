@@ -34,7 +34,8 @@ public class TrainingDataAnnotator {
         for (File inputFile : inputFiles) {
             String subDirectories = inputFile.getParentFile().getAbsolutePath().replace("\\", "/")
                     .replaceFirst(inputDir.getAbsolutePath().replace("\\", "/"), "");
-            File currentOutputDirectory = new File(outputDir.getAbsolutePath() + File.separator + subDirectories);
+            //File currentOutputDirectory = new File(outputDir.getAbsolutePath() + File.separator + subDirectories);
+            File currentOutputDirectory = new File(outputDir.getAbsolutePath());
 
             String outputFileName = FilenameUtils.removeExtension(inputFile.getName()) + ".csv";
             File outputFile = new File(currentOutputDirectory + File.separator + outputFileName);
@@ -49,6 +50,7 @@ public class TrainingDataAnnotator {
 
             List<String> annotatedText = trainingDataAnnotator.annotateText(inputFile);
             Files.write(Paths.get(outputFile.getAbsolutePath()), annotatedText, Charset.defaultCharset());
+            //Files.write(Paths.get(outputFile.getAbsolutePath().replace("\\", "/")), annotatedText, Charset.defaultCharset());
         }
     }
 
