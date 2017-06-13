@@ -126,7 +126,7 @@ public class ReferenceExtractorTrainer {
         // "training"));
         this.transducerTrainer.addEvaluator(new PerClassAccuracyEvaluator(testingInstances, "testing"));
         this.transducerTrainer.addEvaluator(new TokenAccuracyEvaluator(testingInstances, "testing"));
-        // TODO remove
+
         // this.transducerTrainer
         // .addEvaluator(new FixedViterbiWriter(new
         // File("/home/mkoerner/viterbi.txt"), testingInstances, "test"));
