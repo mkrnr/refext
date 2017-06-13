@@ -200,7 +200,7 @@ public class FeaturePipeProviderTest {
         Assert.assertFalse(Pattern.matches(regex, ". "));
     }
 
-    @Test
+    /*@Test
     public void inTest() {
         String regex = this.regexMap.get("IN");
 
@@ -214,7 +214,7 @@ public class FeaturePipeProviderTest {
         Assert.assertFalse(Pattern.matches(regex, "Bingo"));
         Assert.assertFalse(Pattern.matches(regex, "1in2"));
         Assert.assertFalse(Pattern.matches(regex, ""));
-    }
+    }*/
 
     @Test
     public void isNumberTest() {
