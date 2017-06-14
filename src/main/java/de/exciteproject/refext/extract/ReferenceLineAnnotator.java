@@ -26,12 +26,12 @@ import pl.edu.icm.cermine.exception.AnalysisException;
  * {@link CermineLineLayoutExtractor} for format) using a trained CRF with
  * {@link ReferenceExtractorTrainer} in a BIO format.
  */
-public class CrfReferenceLineAnnotator {
+public class ReferenceLineAnnotator {
 
     private CRF crf;
     private Pipe pipe;
 
-    public CrfReferenceLineAnnotator(File crfModelFile) throws AnalysisException {
+    public ReferenceLineAnnotator(File crfModelFile) throws AnalysisException {
         this.crf = (CRF) FileUtils.readObject(crfModelFile);
         this.pipe = this.crf.getInputPipe();
     }

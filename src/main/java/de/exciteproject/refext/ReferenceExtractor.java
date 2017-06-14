@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.exciteproject.refext.extract.CermineLineLayoutExtractor;
-import de.exciteproject.refext.extract.CrfReferenceLineAnnotator;
+import de.exciteproject.refext.extract.ReferenceLineAnnotator;
 import de.exciteproject.refext.extract.ReferenceLineAnnotation;
 import de.exciteproject.refext.extract.ReferenceLineMerger;
 import pl.edu.icm.cermine.ComponentConfiguration;
@@ -20,12 +20,12 @@ import pl.edu.icm.cermine.exception.AnalysisException;
  */
 public class ReferenceExtractor {
 
-    private CrfReferenceLineAnnotator crfReferenceLineAnnotator;
+    private ReferenceLineAnnotator crfReferenceLineAnnotator;
 
     private CermineLineLayoutExtractor cermineLineLayoutExtractor;
 
     public ReferenceExtractor(File crfModelFile) throws AnalysisException {
-        this.crfReferenceLineAnnotator = new CrfReferenceLineAnnotator(crfModelFile);
+        this.crfReferenceLineAnnotator = new ReferenceLineAnnotator(crfModelFile);
         ComponentConfiguration componentConfiguration = new ComponentConfiguration();
 
         this.cermineLineLayoutExtractor = new CermineLineLayoutExtractor(componentConfiguration);
