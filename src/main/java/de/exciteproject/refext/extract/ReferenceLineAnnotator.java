@@ -24,7 +24,8 @@ import pl.edu.icm.cermine.exception.AnalysisException;
 /**
  * Class for annotating given lines with layout (see
  * {@link CermineLineLayoutExtractor} for format) using a trained CRF with
- * {@link ReferenceExtractorTrainer} in a BIO format.
+ * {@link ReferenceExtractorTrainer} in a BIO format. The output is a list of
+ * {@link ReferenceLineAnnotation} objects.
  */
 public class ReferenceLineAnnotator {
 

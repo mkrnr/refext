@@ -12,8 +12,9 @@ import pl.edu.icm.cermine.structure.ITextCharacterExtractor;
 import pl.edu.icm.cermine.structure.model.BxDocument;
 
 /**
- * Class for manually executing the needed CERMINE extractors to improve the
- * runtime in comparison with calling ContentExtractor methods
+ * Class for only executing the needed CERMINE extractors to improve the runtime
+ * in comparison with calling ContentExtractor methods which executes the full
+ * CERMINE pipeline.
  */
 public class CerminePdfExtractor {
 

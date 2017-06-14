@@ -33,6 +33,8 @@ public class CermineLineLayoutExtractor extends CermineLineExtractor {
      *            args[1]: directory in which the outputfiles are stored,
      *            including the subdirectories args[2]: long that specifies the
      *            maximum pdf file size in bytes to prevent heap space errors
+     *            args[2]: file size limit of pdfs to be processed, in bytes
+     * 
      *
      * @throws IOException
      * @throws AnalysisException

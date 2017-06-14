@@ -6,8 +6,8 @@ import java.util.List;
 import pl.edu.icm.cermine.tools.CharacterUtils;
 
 /**
- * Class for extracting and merging references from a list of BIO tagged input
- * lines.
+ * Class for extracting and merging references lines from a list of BIO tagged
+ * input to produce reference strings lines.
  */
 public class ReferenceLineMerger {
 

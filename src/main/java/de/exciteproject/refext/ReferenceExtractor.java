@@ -7,15 +7,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.exciteproject.refext.extract.CermineLineLayoutExtractor;
-import de.exciteproject.refext.extract.ReferenceLineAnnotator;
 import de.exciteproject.refext.extract.ReferenceLineAnnotation;
+import de.exciteproject.refext.extract.ReferenceLineAnnotator;
 import de.exciteproject.refext.extract.ReferenceLineMerger;
 import pl.edu.icm.cermine.ComponentConfiguration;
 import pl.edu.icm.cermine.exception.AnalysisException;
 
 /**
- * Class for applying reference extraction on text files that include layout
- * information (see {@link CermineLineLayoutExtractor}).
+ * Class for applying reference extraction on PDFs or text files that include
+ * layout information (see {@link CermineLineLayoutExtractor}).
  *
  */
 public class ReferenceExtractor {

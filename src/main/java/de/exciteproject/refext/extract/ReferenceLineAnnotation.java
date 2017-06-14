@@ -3,6 +3,10 @@ package de.exciteproject.refext.extract;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Container class for describing the annotation format used in
+ * {@link ReferenceLineAnnotator}.
+ */
 public class ReferenceLineAnnotation {
     private String line;
     private Map<String, Double> annotations;
