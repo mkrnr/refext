@@ -27,7 +27,6 @@ public class ReferenceExtractor {
     public ReferenceExtractor(File crfModelFile) throws AnalysisException {
         this.crfReferenceLineAnnotator = new ReferenceLineAnnotator(crfModelFile);
         ComponentConfiguration componentConfiguration = new ComponentConfiguration();
-
         this.cermineLineLayoutExtractor = new CermineLineLayoutExtractor(componentConfiguration);
     }
 
@@ -70,6 +69,7 @@ public class ReferenceExtractor {
     }
 
     public List<String> extractReferencesFromPdf(File pdfFile) throws IOException, AnalysisException {
+        // textinline/x/y/height/width/zoneID
         List<String> layoutLines = this.cermineLineLayoutExtractor.extract(pdfFile);
         return this.extractReferencesFromLayoutLines(layoutLines);
     }

@@ -83,12 +83,12 @@ public class Main {
 
         // add default conjunctions if empty
         if (this.conjunctions.isEmpty()) {
-            this.conjunctions.add("min2;min1");
+            //this.conjunctions.add("min2;min1");
             this.conjunctions.add("min2");
             this.conjunctions.add("min1");
             this.conjunctions.add("1");
             this.conjunctions.add("2");
-            this.conjunctions.add("1;2");
+            //this.conjunctions.add("1;2");
         }
 
         ReferenceExtractorTrainer referenceExtractorTrainer = new ReferenceExtractorTrainer(this.featureNames,

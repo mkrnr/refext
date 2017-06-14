@@ -48,6 +48,7 @@ public class TextUtils {
                 continue;
             }
             htmlChar += ";";
+            
 
             String unescapedChar = StringEscapeUtils.unescapeHtml4(htmlChar);
 

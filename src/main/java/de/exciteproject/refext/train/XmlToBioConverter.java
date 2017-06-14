@@ -34,7 +34,7 @@ public class XmlToBioConverter {
         String inputDirectoryPath = FileUtils.getDirctory(inputDir).getAbsolutePath();
 
         for (File inputFile : inputFiles) {
-            String inputFileSubPath = inputFile.getAbsolutePath().replaceAll(inputDirectoryPath, "");
+            String inputFileSubPath = inputFile.getAbsolutePath().replace("\\", "/").replaceAll(inputDirectoryPath.replace("\\", "/"), "");
             inputFileSubPath = FilenameUtils.removeExtension(inputFileSubPath).concat(".csv");
 
             File outputFile = new File(outputDir + inputFileSubPath);
