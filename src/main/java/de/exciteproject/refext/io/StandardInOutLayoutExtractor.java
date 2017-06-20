@@ -16,6 +16,8 @@ import com.google.gson.Gson;
 import de.exciteproject.refext.extract.CermineLineLayoutExtractor;
 import pl.edu.icm.cermine.ComponentConfiguration;
 import pl.edu.icm.cermine.exception.AnalysisException;
+import pl.edu.icm.cermine.structure.DocstrumSegmenter;
+import pl.edu.icm.cermine.structure.HierarchicalReadingOrderResolver;
 
 /**
  * Class that listens to inline JSON specifying the files to process
@@ -46,10 +48,16 @@ public class StandardInOutLayoutExtractor {
     @Parameter(names = { "-sizeLimit", "--pdf-file-size-limit" }, description = "limit in byte for pdf files")
     private long pdfFileSizeLimit = 10000000;
 
+    private ComponentConfiguration componentConfiguration;
+    private CermineLineLayoutExtractor cermineLineLayoutExtractor;
+
+    public StandardInOutLayoutExtractor() throws AnalysisException {
+        this.componentConfiguration = new ComponentConfiguration();
+        this.cermineLineLayoutExtractor = new CermineLineLayoutExtractor(this.componentConfiguration);
+    }
+
     private void run() throws AnalysisException, IOException {
 
-        CermineLineLayoutExtractor cermineLineLayoutExtractor = new CermineLineLayoutExtractor(
-                new ComponentConfiguration());
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
 
         String inputLine;
@@ -66,7 +74,7 @@ public class StandardInOutLayoutExtractor {
             File inputFile = new File(extractorJsonInput.inputFilePath);
             File outputFile = new File(extractorJsonInput.outputFilePath);
 
-            List<String> layoutLines = cermineLineLayoutExtractor.extract(inputFile);
+            List<String> layoutLines = this.cermineLineLayoutExtractor.extract(inputFile);
 
             BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(outputFile));
             for (String layoutLine : layoutLines) {
@@ -76,5 +84,11 @@ public class StandardInOutLayoutExtractor {
             bufferedWriter.close();
         }
         bufferedReader.close();
+
+        // reset DocumentSegmenter and ReadingOderResolver to fix memory
+        // leak
+        this.componentConfiguration.setDocumentSegmenter(new DocstrumSegmenter());
+        this.componentConfiguration.setReadingOrderResolver(new HierarchicalReadingOrderResolver());
     }
+
 }
