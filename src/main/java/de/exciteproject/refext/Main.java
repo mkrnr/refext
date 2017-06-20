@@ -90,6 +90,7 @@ public class Main {
 
         List<File> inputFiles = new ArrayList<File>();
 
+        // get list of files if directory or add it to the list if it is a file
         if (this.pdfFile != null) {
             inputFiles = FileUtils.asList(this.pdfFile);
         } else {
@@ -158,11 +159,9 @@ public class Main {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         org.apache.commons.io.FileUtils.writeStringToFile(outputFile, gson.toJson(referenceLineAnnotations),
                 Charset.defaultCharset());
-
     }
 
     private void writeReferenceStrings(List<String> referenceStrings, File outputFile) throws IOException {
-
         BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(outputFile));
 
         for (String referenceString : referenceStrings) {

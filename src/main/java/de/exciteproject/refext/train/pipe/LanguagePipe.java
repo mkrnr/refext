@@ -43,12 +43,13 @@ public class LanguagePipe extends Pipe implements Serializable {
         return carrier;
     }
 
-    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException, LangDetectException {
         // read serial version
         in.readInt();
 
         this.feature = (String) in.readObject();
         this.csvSeparator = (String) in.readObject();
+        this.languageAnalyzer = new LanguageAnalyzer();
     }
 
     private void writeObject(ObjectOutputStream out) throws IOException {

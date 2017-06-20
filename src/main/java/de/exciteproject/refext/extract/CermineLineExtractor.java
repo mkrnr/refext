@@ -52,6 +52,7 @@ public class CermineLineExtractor {
 
         List<File> inputFiles = FileUtils.listFilesRecursively(inputDir);
 
+        // initialize with default cermine componentConfiguration
         ComponentConfiguration componentConfig = new ComponentConfiguration();
         CermineLineExtractor cermineLineExtractor = new CermineLineExtractor(componentConfig);
 
@@ -64,9 +65,14 @@ public class CermineLineExtractor {
             }
             System.out.println("processing: " + inputFile);
 
-            //String subDirectories = inputFile.getParentFile().getAbsolutePath().replace("\\", "/").replaceFirst(inputDir.getAbsolutePath().replace("\\", "/"), "");
-            //System.out.println(subDirectories);
-            //File currentOutputDirectory = new File(outputDir.getAbsolutePath() + File.separator + subDirectories);
+            // String subDirectories =
+            // inputFile.getParentFile().getAbsolutePath().replace("\\",
+            // "/").replaceFirst(inputDir.getAbsolutePath().replace("\\", "/"),
+            // "");
+            // System.out.println(subDirectories);
+            // File currentOutputDirectory = new
+            // File(outputDir.getAbsolutePath() + File.separator +
+            // subDirectories);
             File currentOutputDirectory = new File(outputDir.getAbsolutePath() + File.separator);
             System.out.println(currentOutputDirectory);
             String outputFileName = FilenameUtils.removeExtension(inputFile.getName()) + ".txt";
@@ -109,15 +115,14 @@ public class CermineLineExtractor {
         try {
             BxDocument bxDocument = this.cerminePdfExtractor.extractWithResolvedReadingOrder(pdfFile);
 
+            // iterate over pages and their zones to get the lines
             for (BxPage bxPage : bxDocument.asPages()) {
                 for (BxZone bxZone : bxPage) {
                     for (BxLine bxLine : bxZone) {
                         String extractedLine = this.extractFromLine(bxLine);
                         lines.add(extractedLine);
-
                     }
                 }
-
             }
         } catch (IOException e) {
             // TODO Auto-generated catch block
@@ -136,6 +141,12 @@ public class CermineLineExtractor {
         return lines;
     }
 
+    /**
+     * get the text of a bxLine and do some textual processing
+     *
+     * @param bxLine
+     * @return
+     */
     protected String extractFromLine(BxLine bxLine) {
         String fixedLine = TextUtils.fixAccents(bxLine.toText());
         fixedLine = CsvUtils.normalize(fixedLine);
