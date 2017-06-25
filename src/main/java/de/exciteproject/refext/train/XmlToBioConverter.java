@@ -60,7 +60,7 @@ public class XmlToBioConverter {
     }
 
     public List<String> annotateText(File inputFile) throws IOException, AnalysisException {
-        Scanner s = new Scanner(inputFile);
+        Scanner s = new Scanner(inputFile,"UTF-8");
         ArrayList<String> xmlAnnotatedLines = new ArrayList<String>();
         while (s.hasNextLine()) {
             xmlAnnotatedLines.add(s.nextLine());

@@ -42,7 +42,7 @@ public class FileToCsvDumpMerger {
         String fileId = FilenameUtils.getBaseName(inputFile.getName());
 
         BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(outputFile, true));
-        Scanner inputScanner = new Scanner(inputFile);
+        Scanner inputScanner = new Scanner(inputFile,"UTF-8");
         while (inputScanner.hasNextLine()) {
             String line = inputScanner.nextLine();
             // TODO cleaner way to do the replacement somewhere else?

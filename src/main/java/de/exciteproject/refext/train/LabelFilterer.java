@@ -45,7 +45,7 @@ public class LabelFilterer {
     }
 
     public List<String> filter(File inputFile, String label, double ratio) throws IOException, AnalysisException {
-        Scanner s = new Scanner(inputFile);
+        Scanner s = new Scanner(inputFile,"UTF-8");
         ArrayList<String> bioAnnotatedLines = new ArrayList<String>();
         while (s.hasNextLine()) {
             bioAnnotatedLines.add(s.nextLine());
