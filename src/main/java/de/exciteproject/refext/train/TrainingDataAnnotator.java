@@ -59,6 +59,7 @@ public class TrainingDataAnnotator {
     public TrainingDataAnnotator(File crfModelFile) throws AnalysisException {
         this.referenceExtractor = new ReferenceExtractor(crfModelFile);
     }
+    
 
     public List<String> annotateText(File layoutFile) throws IOException, AnalysisException {
         List<ReferenceLineAnnotation> annotatedLines = this.referenceExtractor.annotateLinesFromLayoutFile(layoutFile,
