@@ -140,6 +140,38 @@ public class CermineLineExtractor {
         }
         return lines;
     }
+    
+    public List<String> extract(String[] args) throws AnalysisException, IOException{
+    	File pdfFile = new File(args[0]);
+        List<String> lines = new ArrayList<String>();
+        try {
+            BxDocument bxDocument = this.cerminePdfExtractor.extractWithResolvedReadingOrder(pdfFile);
+
+            // iterate over pages and their zones to get the lines
+            for (BxPage bxPage : bxDocument.asPages()) {
+                for (BxZone bxZone : bxPage) {
+                    for (BxLine bxLine : bxZone) {
+                        String extractedLine = this.extractFromLine(bxLine);
+                        lines.add(extractedLine);
+                    }
+                }
+            }
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (TimeoutException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (AnalysisException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (Exception e) {
+            // TODO figure out why
+            // InlineImageParseException/InvocationTargetException is not caught
+            e.printStackTrace();
+        }
+        return lines;
+    }
 
     /**
      * get the text of a bxLine and do some textual processing
