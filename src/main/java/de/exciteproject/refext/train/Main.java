@@ -54,22 +54,6 @@ public class Main {
     @Parameter(names = { "-model",
             "--model-output-file" }, description = "file in which the trained crf model is saved", required = true, converter = FileConverter.class)
     private File modelFile;
-
-    @Parameter(names = { "-crfModel",
-    	"--crf-model-path" }, description = "File containing a CRF model (see SupervisedCrfTrainer)", required = true, converter = FileConverter.class)
-    private File crfModelFile;
-
-    @Parameter(names = { "-pdf",
-    	"--input-pdf-path" }, description = "File or directory containing PDFs", converter = FileConverter.class)
-    private File pdfFile;
-
-    @Parameter(names = { "-layout",
-    	"--input-layout-path" }, description = "File or directory where files contain lines and layout information (see CermineLineLayoutExtractor)", converter = FileConverter.class)
-    private File layoutFile;
-
-    @Parameter(names = { "-outputDir",
-    	"--output-directory" }, description = "Directory to store the output", required = true, converter = FileConverter.class)
-    private File outputDir;
     
     @Parameter(names = { "-weight",
             "--trainer-weight" }, description = "weight for crf trainer, depending which trainer is used")
